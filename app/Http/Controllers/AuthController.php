@@ -37,7 +37,7 @@ class AuthController extends Controller
 
     public function login(Request $request){
         $credentials = $request->validate([
-            'email' => 'required|email|string|exists:users,email',
+            'username' => 'required|string|exists:users,username',
             'password' => [
                 'required'
             ],
@@ -52,6 +52,7 @@ class AuthController extends Controller
             ], 422);
         }
         $user = Auth::user();
+        $user_info =  $user->staff();
         $token = $user->createToken('main')->plainTextToken;
         return response([
             'user' => $user,
