@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddEmialInUsersTable extends Migration
+class AddRememberTokenInUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,8 @@ class AddEmialInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
-        });
+            $table->rememberToken();
+      });
     }
 
     /**
@@ -27,8 +27,6 @@ class AddEmialInUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->string('email')->unique();
-            $table->rememberToken();
         });
     }
 }
