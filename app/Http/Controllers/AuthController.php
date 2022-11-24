@@ -6,31 +6,40 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Staff;
+use App\Models\Customer;
 
 class AuthController extends Controller
 {
     public function register(Request $request){
+        // $data =  $request->all();
         $data = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|string|unique:users,email',
+            'username' => 'required|string|unique:users,username',
             'password' => [
                 'required',
                 'confirmed',
                 Password::min(8)->mixedCase()->numbers()->symbols()
-            ]
+            ],
+            'role_id' => 'required',
+            'staff_id' => 'required',
         ]);
 
         /** @var \App\Models\User $user */
         $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password'])
+            'username' => $data['username'],
+            'password' => bcrypt($data['password']),
+            'role_id' => $data['role_id'],
+
         ]);
         
         $token = $user->createToken('main')->plainTextToken;
 
+        $staff_inf = Staff::where('id',$data['staff_id'])->first();
+        $staff_inf['id_login'] = $user['id'];
+        $staff_inf->save();
+
         return response([
-            'user' => $user,
+            'staff_information' => $staff_inf,
             'token' => $token
         ]);
     }
@@ -52,10 +61,16 @@ class AuthController extends Controller
             ], 422);
         }
         $user = Auth::user();
-        $user_info =  $user->staff();
+        $role = $user->role();
+
+        $user_info =  Staff::where('id_login',$user['id'])->first();
+        if(!$user_info){
+            $user_info =  Customer::where('id_login',$user['id'])->first();
+        }
         $token = $user->createToken('main')->plainTextToken;
         return response([
-            'user' => $user,
+            'role' => $role,
+            'information' => $user_info,
             'token' => $token
         ]);
 
