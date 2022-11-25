@@ -18,7 +18,7 @@ class CreateOrderDetailsTable extends Migration
             // $table->foreign('drink_id')->references('drink_id')->on('drink_details');
 
             $table->unsignedBigInteger('drink_detail_id');
-            $table->foreign('drink_detail_id')->references('ID')->on('drink_details');
+            $table->foreign('drink_detail_id')->references('id')->on('drink_details');
 
 
             $table->unsignedBigInteger('order_id');
