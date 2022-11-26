@@ -18,7 +18,11 @@ class Staff extends Model
         "address",
         'dob',
         'hometown',
-        'active'
+        'active',
+        'branch_id',
+        'position_id',
+        'id_login',
+        'email',
     ];
 
     public $timestamps = false;

@@ -6,13 +6,51 @@
         "version": "1.0"
     },
     "paths": {
-        "/api/register": {
+        "https://hidden-bastion-43852.herokuapp.com/api/admin/register": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
                 "summary": "Đăng kí tài khoản cho nhân viên",
-                "operationId": "8a56853624e025573120a09a4c75d468",
+                "operationId": "6e468e58b1067487ac0624dd9e1443e4",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            },
+                                            "password_confirmation": {
+                                                "type": "string"
+                                            },
+                                            "role_id": {
+                                                "type": "number"
+                                            },
+                                            "staff_id": {
+                                                "type": "number"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "username": "nghi1421",
+                                    "password": "123123123",
+                                    "password_confirmation": "123123123",
+                                    "role_id": 1,
+                                    "staff_id": 1
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "success",
@@ -119,13 +157,43 @@
                 }
             }
         },
-        "/api/login": {
+        "https://hidden-bastion-43852.herokuapp.com/api/admin/login": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
-                "summary": "Đăng nhập tài khoản",
-                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "summary": "Đăng nhập tài khoản cho nhân viên",
+                "operationId": "3cce28b61a5261ef1c18c559cce771e6",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            },
+                                            "remember": {
+                                                "type": "boolean"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "username": "nghi1421",
+                                    "password": "123123123",
+                                    "remember": true
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "success",
@@ -222,6 +290,152 @@
                                         "msg": {
                                             "type": "string",
                                             "example": "Invalid inputs"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "https://hidden-bastion-43852.herokuapp.com//api/admin/logout": {
+            "post": {
+                "tags": [
+                    "API Authentication"
+                ],
+                "summary": "Đăng kí tài khoản",
+                "operationId": "e51f6f3e0ee4424d543eb28501b055c9",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "phone_number": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "username": "nghi1421",
+                                    "password": "123123123",
+                                    "remember": true
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "Dang xuat thanh cong"
+                                        },
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "https://hidden-bastion-43852.herokuapp.com/api/login-customer": {
+            "post": {
+                "tags": [
+                    "API Authentication"
+                ],
+                "summary": "Đăng nhập khách háng",
+                "operationId": "c2d1ee10c41d1078ad8939017d43e865",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "phone_number": {
+                                        "type": "string",
+                                        "example": "0123123123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "information": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Nguyen Van A"
+                                                },
+                                                "gender": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "phone_number": {
+                                                    "type": "string",
+                                                    "example": "0123123123"
+                                                },
+                                                "dob": {
+                                                    "type": "string",
+                                                    "example": "2001-04-01"
+                                                },
+                                                "active": {
+                                                    "type": "booelan",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "123123123123123123123"
+                                        },
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "Dang nhap khach hang thanh cong"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "FAIL",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "Chua co thong tin khach hang"
                                         }
                                     },
                                     "type": "object"

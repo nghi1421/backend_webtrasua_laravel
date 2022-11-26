@@ -20,7 +20,7 @@ class CreateCustomersTable extends Migration
             // 0: Nam
             // 1: Nữ
             // 2: Khác
-            $table->string('phone_number', 15)->nullable();
+            $table->string('phone_number', 15);
             $table->datetime('dob')->nullable();
             $table->boolean('active');
 

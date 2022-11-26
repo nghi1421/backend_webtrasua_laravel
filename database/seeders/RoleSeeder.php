@@ -16,17 +16,25 @@ class RoleSeeder extends Seeder
         Role::create([
             'name' => 'Quản lí'
         ]);
+
         Role::create([
             'name' => 'Thu ngân'
         ]);
+        
         Role::create([
             'name' => 'Bếp'
         ]);
+
         Role::create([
             'name' => 'Kế toán'
         ]);
+
         Role::create([
             'name' => 'Quản lí kho'
+        ]);
+
+        Role::create([
+            'name' => 'Khách hàng'
         ]);
     }
 }

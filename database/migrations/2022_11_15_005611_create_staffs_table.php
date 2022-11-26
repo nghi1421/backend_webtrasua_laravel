@@ -20,7 +20,7 @@ class CreateStaffsTable extends Migration
             // 0: Nam
             // 1: Nữ
             // 2: Khác
-            $table->string('phone_number', 15);
+            $table->string('phone_number', 15)->unique();
             $table->string('address', 200);
             $table->date('dob')->nullable();
             $table->string('hometown',100);

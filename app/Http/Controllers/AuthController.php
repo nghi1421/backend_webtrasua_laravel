@@ -16,8 +16,46 @@ class AuthController extends Controller
     /**
      * Đăng kí tài khoản cho nhân viên
      * @OA\Post (
-     *     path="/api/register",
+     *     path="https://hidden-bastion-43852.herokuapp.com/api/admin/register",
      *     tags={"API Authentication"},
+     * 
+     * *     @OA\RequestBody(
+        *         @OA\MediaType(
+        *             mediaType="application/json",
+        *             @OA\Schema(
+        *                 @OA\Property(
+        *                      type="object",
+        *                      @OA\Property(
+        *                          property="username",
+        *                          type="string"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="password",
+        *                          type="string"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="password_confirmation",
+        *                          type="string"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="role_id",
+        *                          type="number"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="staff_id",
+        *                          type="number"
+        *                      )
+        *                 ),
+        *                 example={
+        *                     "username":"nghi1421",
+        *                     "password":"123123123",
+        *                     "password_confirmation": "123123123",
+        *                     "role_id": 1,
+        *                     "staff_id": 1,
+        *                }
+        *             )
+        *         )
+        *      ),
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -110,10 +148,38 @@ class AuthController extends Controller
     }
 
     /**
-     * Đăng nhập tài khoản
+     * Đăng nhập tài khoản cho nhân viên
      * @OA\Post (
-     *     path="/api/login",
+     *     path="https://hidden-bastion-43852.herokuapp.com/api/admin/login",
      *     tags={"API Authentication"},
+   
+        *     @OA\RequestBody(
+        *         @OA\MediaType(
+        *             mediaType="application/json",
+        *             @OA\Schema(
+        *                 @OA\Property(
+        *                      type="object",
+        *                      @OA\Property(
+        *                          property="username",
+        *                          type="string"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="password",
+        *                          type="string"
+        *                      ),
+        *                      @OA\Property(
+        *                          property="remember",
+        *                          type="boolean"
+        *                      )
+        *                 ),
+        *                 example={
+        *                     "username":"nghi1421",
+        *                     "password":"123123123",
+        *                     "remember": true,
+        *                }
+        *             )
+        *         )
+        *      ),
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -179,7 +245,7 @@ class AuthController extends Controller
         unset($credentials['remember']);
         if(!Auth::attempt($credentials, $remember)){
             return response([
-                'error' => 'Xac thuc khong hop le'
+                'msg' => 'Xac thuc khong hop le',
             ], 422);
         }
 
@@ -188,24 +254,156 @@ class AuthController extends Controller
         $role = Role::where('id',$user['role_id'])->first();
 
         $user_info =  Staff::where('id_login',$user['id'])->first();
-        if(!$user_info){
-            $user_info =  Customer::where('id_login',$user['id'])->first();
-        }
+
         $token = $user->createToken('main')->plainTextToken;
         return response([
             'role' => $role,
             'information' => $user_info,
-            'token' => $token
+            'token' => $token,
         ]);
 
     }
 
+    /**
+     * Đăng kí tài khoản
+     * @OA\Post (
+     *     path="https://hidden-bastion-43852.herokuapp.com//api/admin/logout",
+     *     tags={"API Authentication"},
+ *             @OA\RequestBody(
+        *         @OA\MediaType(
+        *             mediaType="application/json",
+        *             @OA\Schema(
+        *                 @OA\Property(
+        *                      type="object",
+        *                      @OA\Property(
+        *                          property="phone_number",
+        *                          type="string"
+        *                      ),
+        *                 ),
+        *                 example={
+        *                     "username":"nghi1421",
+        *                     "password":"123123123",
+        *                     "remember": true,
+        *                }
+        *             )
+        *         )
+        *      ),
+
+
+     *     @OA\Response(
+     *         response=200,
+     *         description="success",
+     *         @OA\JsonContent(
+     * *             @OA\Property(
+     *                 type="string",
+     *                 property="msg",
+     *                 example = "Dang xuat thanh cong",
+     *                 
+     *              ),
+     *              @OA\Property(
+     *                 type="boolean",
+     *                 property="success",
+     *                 example = true,
+     *             )
+     *      ),     
+
+     * )
+     * )
+     */
     public function logout(){
         $user = Auth::user();
         $user->currentAccessToken()->delete();
 
         return response([
-            'success' => true,
+            'msg' => "Dang xuat thanh cong",
         ]);
+    }
+
+
+     /**
+     * Đăng nhập khách háng
+     * @OA\Post (
+     *     path="https://hidden-bastion-43852.herokuapp.com/api/login-customer",
+     *     tags={"API Authentication"},
+        *     @OA\RequestBody(
+        *         @OA\MediaType(
+        *             mediaType="application/json",
+        *             @OA\Schema(
+    *                      @OA\Property(
+    *                          property="phone_number",
+    *                          type="string",
+    *                          example = "0123123123"
+    *                      )
+        *          
+        *             )
+        *         )
+        *      ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="SUCCESS",
+     *         @OA\JsonContent(
+     *              @OA\Property(
+     *                 type="object",
+     *                 property="information",
+     *                  @OA\Property(property="id", type="number", example=1),
+     *                  @OA\Property(property="name", type="string", example="Nguyen Van A"),
+     *                  @OA\Property(property="gender", type="number", example=1),
+     *                  @OA\Property(property="phone_number", type="string", example="0123123123"),
+     *                  @OA\Property(property="dob", type="string", example="2001-04-01"),
+     *                  @OA\Property(property="active", type="booelan", example=true),
+     *             ),
+     *             @OA\Property(
+     *                 type="string",
+     *                 property="token",
+     *                 example="123123123123123123123"
+     *             ),
+     *             @OA\Property(
+     *                 type="string",
+     *                 property="msg",
+     *                 example="Dang nhap khach hang thanh cong"
+     *             )
+     *          )
+     *    ),      
+    *       @OA\Response(
+    *         response=400,
+    *         description="FAIL",
+    *         @OA\JsonContent(
+    *             @OA\Property(
+    *                 type="string",
+    *                 property="msg",
+    *                 example="Chua co thong tin khach hang"
+    *             )
+    *         )
+    *     )
+     * 
+     * )
+     */
+    public function loginCustomer(Request $request){
+        $validation = $request->validate([
+            'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:9'
+        ]);
+        // $validation = $request->all();
+        $info_cus = Customer::where('phone_number',$validation['phone_number'])->first();
+        
+        if(!$info_cus){
+            return response()->json([
+                'msg' => "Khachh hang chua co tai khoan"
+            ],400);
+        }
+        $login_customer = [
+            'username' => 'allcustomer123',
+            'password' => 'ThanhNghi123`',
+        ];
+
+        Auth::attempt($login_customer);
+        $user = Auth::user();
+        $token = $user->createToken('customer')->plainTextToken;
+        // $token = 1;
+        return response([
+            'information' => $info_cus,
+            'token' => $token,
+            'msg' => "Dang nhap khach hang thanh cong"
+        ]);
+
     }
 }

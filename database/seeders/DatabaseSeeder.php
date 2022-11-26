@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(SizeSeeder::class);
         // $this->call(WarehouseSeeder::class);
         // $this->call(RoleSeeder::class);
-        $this->call(CreateTestStaffSeeder::class);
+        // $this->call(CreateTestStaffSeeder::class);
+        // $this->call(CreateTestStaffSeeder::class);
+        // $this->call(CustomerSeeder::class);
+        $this->call(AccountForAllCustomerSeeder::class);
     }
 }
