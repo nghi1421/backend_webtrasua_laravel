@@ -20,7 +20,7 @@ class CreateRecipesTable extends Migration
             $table->unsignedBigInteger('material_id');
             $table->foreign('material_id')->references('id')->on('materials');
 
-            $table->primary('drink_id', 'material_id');
+            $table->primary(['drink_id', 'material_id']);
 
             $table->decimal('amount', 4, 4)->default(0);
         });

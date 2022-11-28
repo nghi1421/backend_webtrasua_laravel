@@ -138,11 +138,35 @@ class StaffController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Staff $staff)
     {
-        //
+        if(
+            $staff->importVouchers() == "{}" ||
+            $staff->supplyVouchers() == "{}" ||
+            $staff->orders() == "{}"
+        ) {
+            return response()->json([
+                'msg' => "Nhan vien da lap don khong the xoa",
+            ],400);
+        }
+
+        if($staff['id_login'])
+            User::find($staff['id_login'])->delete();
+        $staff->delete();
     }
 
+
+    public function active($id){
+        $staff = Staff::find($id);
+        $staff['active'] = true;
+        $staff->update();
+    }
+
+    public function inActive($id){
+        $staff = Staff::find($id);
+        $staff['active'] = false;
+        $staff->update();
+    }
 
     //function support------------------------------------------------
     public function paddingNumber($a){

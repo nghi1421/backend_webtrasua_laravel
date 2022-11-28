@@ -21,7 +21,7 @@ class CreateCustomersTable extends Migration
             // 1: Nữ
             // 2: Khác
             $table->string('phone_number', 15);
-            $table->datetime('dob')->nullable();
+            $table->date('dob')->nullable();
             $table->boolean('active');
 
             $table->unsignedBigInteger('id_login')->nullable();

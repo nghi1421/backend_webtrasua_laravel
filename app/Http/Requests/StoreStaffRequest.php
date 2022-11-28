@@ -31,9 +31,10 @@ class StoreStaffRequest extends FormRequest
             'hometown' => ['required'],
             'branch_id' => ['required'],
             'position_id' => ['required'],
-            // 'create_account' => ['required'],
+            'dob' => ['date'],
             'position_id' => ['required'],
             'email' => ['required','email','unique:staffs,email'],
+            'active' => ['required','boolean'],
         ];
 
     }

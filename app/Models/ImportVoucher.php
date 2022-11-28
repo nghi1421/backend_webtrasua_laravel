@@ -31,7 +31,7 @@ class ImportVoucher extends Model
     }
 
     public function materials(){
-        return $this->belongsToMany(Materials::class);
+        return $this->belongsToMany(Materials::class)->withPivot('amount');;
     }
     
 }

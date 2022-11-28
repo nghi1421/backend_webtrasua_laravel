@@ -24,7 +24,7 @@ class CreateDrinkDetailsTable extends Migration
             // $table->foreignId('size_id')->constained('sizes');
             // $table->foreignId('drink_id')->constained('drinks');
 
-            $table->unique('drink_id', 'size_id');
+            $table->unique(['drink_id', 'size_id']);
 
             $table->boolean('active')->default(true);
         });

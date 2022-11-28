@@ -19,22 +19,23 @@ class Material extends Model
     public $timestamps = false;
 
     public function branches(){
-        return $this->belongsToMany(Branches::class);
+        // return $this->belongsToMany(Branch::class, 'branch_materials');
+        return $this->belongsToMany(Branch::class, 'branch_materials',  'material_id','branch_id')->withPivot('amount');
     }
 
     public function warehouses(){
-        return $this->belongsToMany(Warehouse::class);
+        return $this->belongsToMany(Warehouse::class)->withPivot('amount');
     }
 
     public function drinks(){
-        return $this->belongsToMany(Drinks::class);
+        return $this->belongsToMany(Drink::class)->withPivot('amount');
     }
 
     public function importVourchers(){
-        return $this->belongsToMany(ImportVoucher::class);
+        return $this->belongsToMany(ImportVoucher::class)->withPivot('amount');
     }
 
     public function supplyVourchers(){
-        return $this->belongsToMany(SupplyVoucher::class);
+        return $this->belongsToMany(SupplyVoucher::class)->withPivot('amount');
     }
 }

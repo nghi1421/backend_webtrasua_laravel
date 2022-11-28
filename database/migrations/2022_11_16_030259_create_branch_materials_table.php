@@ -20,9 +20,9 @@ class CreateBranchMaterialsTable extends Migration
             $table->unsignedBigInteger('material_id');
             $table->foreign('material_id')->references('id')->on('materials');
 
-            $table->primary('branch_id', 'material_id');
+            $table->primary(['branch_id', 'material_id']);
 
-            $table->decimal('amount', 4, 4)->default(0);
+            $table->decimal('amount', 10, 4)->default(0);
         });
     }
 

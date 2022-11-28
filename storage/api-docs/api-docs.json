@@ -6,13 +6,13 @@
         "version": "1.0"
     },
     "paths": {
-        "https://hidden-bastion-43852.herokuapp.com/api/admin/register": {
+        "/api/admin/register": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
                 "summary": "Đăng kí tài khoản cho nhân viên",
-                "operationId": "6e468e58b1067487ac0624dd9e1443e4",
+                "operationId": "cb562e036ec11873a898f9a8df236422",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -157,13 +157,13 @@
                 }
             }
         },
-        "https://hidden-bastion-43852.herokuapp.com/api/admin/login": {
+        "/api/admin/login": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
                 "summary": "Đăng nhập tài khoản cho nhân viên",
-                "operationId": "3cce28b61a5261ef1c18c559cce771e6",
+                "operationId": "52072ab0ab3a6409abf44ae228659d79",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -300,13 +300,13 @@
                 }
             }
         },
-        "https://hidden-bastion-43852.herokuapp.com//api/admin/logout": {
+        "//api/admin/logout": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
                 "summary": "Đăng kí tài khoản",
-                "operationId": "e51f6f3e0ee4424d543eb28501b055c9",
+                "operationId": "dc4d7b65f004db9f0437086b3bcfee48",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -355,13 +355,13 @@
                 }
             }
         },
-        "https://hidden-bastion-43852.herokuapp.com/api/login-customer": {
+        "/api/login-customer": {
             "post": {
                 "tags": [
                     "API Authentication"
                 ],
                 "summary": "Đăng nhập khách háng",
-                "operationId": "c2d1ee10c41d1078ad8939017d43e865",
+                "operationId": "94ac8c96e17494e97496b6a65ecb56dd",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -442,6 +442,67 @@
                                 }
                             }
                         }
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Get list of projects",
+                "description": "Returns list of projects",
+                "operationId": "getProjectsList",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Projects"
+                ],
+                "summary": "Store new project",
+                "description": "Returns project data",
+                "operationId": "storeProject",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     }
                 }
             }

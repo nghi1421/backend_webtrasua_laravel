@@ -28,7 +28,7 @@ class CreateOrderDetailsTable extends Migration
 
             $table->json('topping_list')->nullable();
 
-            $table->primary('drink_detail_id', 'order_id');
+            $table->primary(['drink_detail_id', 'order_id']);
         });
     }
 

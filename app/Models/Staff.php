@@ -38,4 +38,16 @@ class Staff extends Model
     public function position(){
         return $this->belongsTo(Position::class);
     }
+
+    public function importVouchers(){
+        return $this->hasMany(ImportVoucher::class);
+    }
+
+    public function supplyVouchers(){
+        return $this->hasMany(SupplyVoucher::class);
+    }
+
+    public function orders(){
+        return $this->hasMany(Order::class);
+    }
 }

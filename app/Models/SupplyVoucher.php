@@ -23,7 +23,7 @@ class SupplyVoucher extends Model
     }
 
     public function materials(){
-        return $this->belongsToMany(Material::class);
+        return $this->belongsToMany(Material::class)->withPivot('amount');;
     }
 
 }

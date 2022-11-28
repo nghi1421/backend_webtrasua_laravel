@@ -16,7 +16,7 @@ class AuthController extends Controller
     /**
      * Đăng kí tài khoản cho nhân viên
      * @OA\Post (
-     *     path="https://hidden-bastion-43852.herokuapp.com/api/admin/register",
+     *     path="/api/admin/register",
      *     tags={"API Authentication"},
      * 
      * *     @OA\RequestBody(
@@ -150,7 +150,7 @@ class AuthController extends Controller
     /**
      * Đăng nhập tài khoản cho nhân viên
      * @OA\Post (
-     *     path="https://hidden-bastion-43852.herokuapp.com/api/admin/login",
+     *     path="/api/admin/login",
      *     tags={"API Authentication"},
    
         *     @OA\RequestBody(
@@ -267,7 +267,7 @@ class AuthController extends Controller
     /**
      * Đăng kí tài khoản
      * @OA\Post (
-     *     path="https://hidden-bastion-43852.herokuapp.com//api/admin/logout",
+     *     path="//api/admin/logout",
      *     tags={"API Authentication"},
  *             @OA\RequestBody(
         *         @OA\MediaType(
@@ -323,7 +323,7 @@ class AuthController extends Controller
      /**
      * Đăng nhập khách háng
      * @OA\Post (
-     *     path="https://hidden-bastion-43852.herokuapp.com/api/login-customer",
+     *     path="/api/login-customer",
      *     tags={"API Authentication"},
         *     @OA\RequestBody(
         *         @OA\MediaType(

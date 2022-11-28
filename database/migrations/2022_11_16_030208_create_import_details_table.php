@@ -20,7 +20,7 @@ class CreateImportDetailsTable extends Migration
             $table->unsignedBigInteger('material_id');
             $table->foreign('material_id')->references('id')->on('materials');
 
-            $table->primary('imp_vou_id', 'material_id');
+            $table->primary(['imp_vou_id', 'material_id']);
 
             $table->decimal('amount', 4, 4)->default(0);
         });

@@ -20,7 +20,7 @@ class CreatePermissionsTable extends Migration
             $table->unsignedBigInteger('route_id');
             $table->foreign('route_id')->references('id')->on('routes');
 
-            $table->primary('role_id', 'route_id');
+            $table->primary(['role_id', 'route_id']);
 
             $table->integer('status');
         });
