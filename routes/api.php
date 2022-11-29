@@ -8,6 +8,7 @@ use App\Http\Controllers\StaffController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\DrinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +44,10 @@ Route::prefix('/admin')->group( function () {
         Route::post('/warehouses/inactive/{id}', [WarehouseController::class, 'inActive']);
 
         Route::apiResource('/materials', MaterialController::class);
+
+        Route::apiResource('/drinks', DrinkController::class);
+        Route::post('/warehouses/active/{id}', [DrinkController::class, 'active']);
+        Route::post('/warehouses/inactive/{id}', [DrinkController::class, 'inActive']);
     });
     
     Route::post('/register',[AuthController::class, 'register']);
@@ -50,6 +55,11 @@ Route::prefix('/admin')->group( function () {
 
 });
 
+// Route::middleware('auth:sanctum')->group(function (){
+//     Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);
+// });
+
+Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);
 
 Route::post('/login-customer',[AuthController::class, 'loginCustomer']);
 
