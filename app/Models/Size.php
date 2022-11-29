@@ -19,6 +19,6 @@ class Size extends Model
     public $timestamps = false;
 
     public function drinks(){
-        return $this->belongsToMany(Drink::class)->withPivot('active');
+        return $this->belongsToMany(Drink::class, 'drink_details', 'size_id', 'drink_id');
     }
 }

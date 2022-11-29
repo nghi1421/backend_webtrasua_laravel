@@ -22,7 +22,7 @@ class CreateImportDetailsTable extends Migration
 
             $table->primary(['imp_vou_id', 'material_id']);
 
-            $table->decimal('amount', 4, 4)->default(0);
+            $table->decimal('amount', 10, 4)->default(0);
         });
     }
 

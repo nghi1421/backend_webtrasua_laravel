@@ -25,7 +25,7 @@ class Drink extends Model
     public $timestamps = false;
 
     public function materials(){
-        return $this->belongsToMany(Material::class)->withPivot('amount');
+        return $this->belongsToMany(Material::class, 'recipes', 'drink_id', 'material_id')->withPivot('amount');
     }
 
     public function toppings(){
@@ -33,6 +33,6 @@ class Drink extends Model
     }
 
     public function sizes(){
-        return $this->belongsToMany(Size::class)->withPivot('active');
+        return $this->belongsToMany(Size::class, 'drink_details', 'drink_id', 'size_id')->withPivot('active');
     }
 }

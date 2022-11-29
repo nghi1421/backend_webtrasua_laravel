@@ -24,6 +24,57 @@ class CreateTestStaffSeeder extends Seeder
             'active' => 1,
             'branch_id' => 1,
             'position_id' => 1,
+            'id_login' => 1,
+            'email' => 'thanhnghi1421@gmail.com',
+        ]);
+        Staff::create([
+            'name' => "Nguyen Thanh N",
+            'gender' => 1,
+            'phone_number' => "0223344222",
+            'address' => "Test",
+            'dob' => '2001-4-1',
+            'hometown' => 'An Giang',
+            'active' => 1,
+            'branch_id' => 1,
+            'position_id' => 2,
+            'email' => 'abc123@gmail.com',
+
+        ]);
+        Staff::create([
+            'name' => "Trần Thị Thùy L",
+            'gender' => 1,
+            'phone_number' => "0888222333",
+            'address' => "Test",
+            'dob' => '2002-1-1',
+            'hometown' => 'Tp Hồ CHí Minh',
+            'active' => 1,
+            'branch_id' => 1,
+            'position_id' => 3,
+            'email' => 'acbxyz@gmail.com',
+        ]);
+        Staff::create([
+            'name' => "Lê Hoàng K",
+            'gender' => 1,
+            'phone_number' => "0999224621",
+            'address' => "Test",
+            'dob' => '2001-4-1',
+            'hometown' => 'Tp Hồ CHí Minh',
+            'active' => 1,
+            'branch_id' => 1,
+            'position_id' => 4,
+            'email' => 'abc456@gmail.com',
+        ]);
+        Staff::create([
+            'name' => "Đinh Văn B",
+            'gender' => 1,
+            'phone_number' => "0998712322",
+            'address' => "Test",
+            'dob' => '2001-4-1',
+            'hometown' => 'Tp Hồ CHí Minh',
+            'active' => 1,
+            'branch_id' => 1,
+            'position_id' => 5,
+            'email' => 'acbyyy@gmail.com',
         ]);
     }
 }

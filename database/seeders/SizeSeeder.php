@@ -15,16 +15,19 @@ class SizeSeeder extends Seeder
     {
         //
         Size::create([
+            'id' => 1,
             'name' => 'S',
             'ratio' => 1,
         ]);
 
         Size::create([
+            'id' => 2,
             'name' => 'S',
             'ratio' => 1.2,
         ]);
         
         Size::create([
+            'id' => 3,
             'name' => 'L',
             'ratio' => 1.4,
 

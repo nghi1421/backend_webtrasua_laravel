@@ -24,18 +24,18 @@ class Material extends Model
     }
 
     public function warehouses(){
-        return $this->belongsToMany(Warehouse::class)->withPivot('amount');
+        return $this->belongsToMany(Warehouse::class, 'warehouse_materials',  'material_id', 'warehouse_id')->withPivot('amount');
     }
 
     public function drinks(){
-        return $this->belongsToMany(Drink::class)->withPivot('amount');
+        return $this->belongsToMany(Drink::class, 'recipes',  'material_id', 'drink_id')->withPivot('amount');
     }
 
-    public function importVourchers(){
-        return $this->belongsToMany(ImportVoucher::class)->withPivot('amount');
+    public function importVouchers(){
+        return $this->belongsToMany(ImportVoucher::class, 'import_details',  'material_id', 'imp_vou_id')->withPivot('amount');
     }
 
-    public function supplyVourchers(){
-        return $this->belongsToMany(SupplyVoucher::class)->withPivot('amount');
+    public function supplyVouchers(){
+        return $this->belongsToMany(SupplyVoucher::class, 'supply_details',  'material_id','sup_vou_id')->withPivot('amount');
     }
 }

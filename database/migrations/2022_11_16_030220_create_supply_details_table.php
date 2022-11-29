@@ -22,7 +22,7 @@ class CreateSupplyDetailsTable extends Migration
 
             $table->primary(['sup_vou_id', 'material_id']);
 
-            $table->decimal('amount', 4, 4)->default(0);
+            $table->decimal('amount', 10, 4)->default(0);
         });
     }
 

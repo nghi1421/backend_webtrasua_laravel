@@ -14,6 +14,13 @@ class WarehouseResource extends JsonResource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'phoneNumber' => $this->phone_number,
+            'dateOpened' => $this->date_opened,
+            'active' => $this->active,
+        ];
     }
 }

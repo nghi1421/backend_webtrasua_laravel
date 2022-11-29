@@ -23,7 +23,7 @@ class SupplyVoucher extends Model
     }
 
     public function materials(){
-        return $this->belongsToMany(Material::class)->withPivot('amount');;
+        return $this->belongsToMany(Material::class, 'supply_details', 'sup_vou_id', 'material_id')->withPivot('amount');;
     }
 
 }

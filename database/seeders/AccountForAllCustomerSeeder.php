@@ -14,6 +14,13 @@ class AccountForAllCustomerSeeder extends Seeder
     public function run()
     {
         User::create([
+            'id' => 1,
+            'username' => "admin123",
+            'password' => bcrypt("ThanhNghi123`"),
+            'role_id' => 1,
+        ]);
+        User::create([
+            'id' => 2,
             'username' => "allcustomer123",
             'password' => bcrypt("ThanhNghi123`"),
             'role_id' => 6,

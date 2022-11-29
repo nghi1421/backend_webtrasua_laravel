@@ -37,6 +37,6 @@ class Order extends Model
     }
 
     public function drinkDetails(){
-        return $this->belongsToMany(DrinkDetail::class);
+        return $this->belongsToMany(DrinkDetail::class, 'order_details',  'order_id','drink_detail_id')->withPivot(['quantity','topping_list']);;
     }
 }

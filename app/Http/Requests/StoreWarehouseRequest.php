@@ -13,7 +13,7 @@ class StoreWarehouseRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,16 @@ class StoreWarehouseRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required'],
+            'address' => ['required'],
+            'phone_number' => [
+                'required',
+                'regex:/(0)[0-9]/','not_regex:/[a-z]/',
+                'min:9',
+                'unique:warehouses,phone_number'
+            ],
+            'date_opened' => ['date'],
+            'active' => ['required'],
         ];
     }
 }

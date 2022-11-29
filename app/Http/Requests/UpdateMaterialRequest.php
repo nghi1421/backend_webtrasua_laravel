@@ -13,7 +13,7 @@ class UpdateMaterialRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,24 @@ class UpdateMaterialRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == 'PUT'){
+            return [
+                'name' => [
+                    'required',
+                ],
+                'uom' => ['required']
+            ];
+        }
+        else{
+            return [
+                'name' => [
+                    'sometimes',
+                    'required'
+                    
+                ],
+                'uom' => ['sometimes','required']
+            ];
+        }
     }
 }

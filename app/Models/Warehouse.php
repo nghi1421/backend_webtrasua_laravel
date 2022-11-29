@@ -25,4 +25,8 @@ class Warehouse extends Model
     public function importVouchers(){
         return $this->hasMany(ImportVoucher::class);
     }
+
+    public function materials(){
+        return $this->belongsToMany(Material::class, 'warehouse_materials', 'warehouse_id', 'material_id')->withPivot('amount');
+    }
 }

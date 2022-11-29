@@ -88,14 +88,15 @@ class BranchController extends Controller
             $index +=1;
         }
         
-        foreach($material_left as $material){
-            unset($material_left[array_search($material, $material_left)]);
-        }
+        // foreach($material_left as $material){
+        //     unset($material_left[array_search($material, $material_left)]);
+        // }
+
         Branch::find($branch['id']);
         return response()->json([
             'branchInfo' => new BranchResource($branch),
             'branchMaterial' => $material_branch,
-            'allMaterial' => $material_all
+            'allMaterial' => $material_left
         ]);
     }
 
@@ -131,7 +132,7 @@ class BranchController extends Controller
     public function destroy($id)
     {
         $branch =  Branch::find($id);
-        if($branch->orders() == '{}' || $branch->staffs() == '{}' || $branch->materials() == '{}') {
+        if($branch->orders()->get() != '[]' || $branch->staffs()->get() != '[]' || $branch->materials()->get() != '[]') {
             return response()->json([
                 'msg' => 'Xoa chi nhanh that bai'
             ],400);

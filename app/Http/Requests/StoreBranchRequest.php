@@ -33,6 +33,8 @@ class StoreBranchRequest extends FormRequest
             ],
             'date_opened' => ['date'],
             'active' => ['required'],
+            'list_material' => ['required','array', 'min:1'],
+            'list_material.amount' => ['required'],
         ];
     }
 }

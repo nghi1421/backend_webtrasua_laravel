@@ -22,7 +22,7 @@ class CreateRecipesTable extends Migration
 
             $table->primary(['drink_id', 'material_id']);
 
-            $table->decimal('amount', 4, 4)->default(0);
+            $table->decimal('amount', 10, 4)->default(0);
         });
     }
 

@@ -3,6 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreMaterialRequest;
+use App\Http\Requests\UpdateMaterialRequest;
+use App\Http\Resources\MaterialCollection;
+use App\Http\Resources\MaterialResource;
+use App\Models\Branch;
+use App\Models\Staff;
+use App\Models\Order;
+use App\Models\Recipe;
+use App\Models\Material;
 
 class MaterialController extends Controller
 {
@@ -13,7 +22,7 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        //
+        return new MaterialCollection(Material::paginate(5));
     }
 
     /**
@@ -32,9 +41,9 @@ class MaterialController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreMaterialRequest $request)
     {
-        //
+        return new MaterialResource(Material::create($request->all()));
     }
 
     /**
@@ -43,9 +52,9 @@ class MaterialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Material $material)
     {
-        //
+        return new MaterialResource($material);
     }
 
     /**
@@ -66,9 +75,9 @@ class MaterialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateMaterialRequest $request, Material $material)
     {
-        //
+        $material->update($request->all());
     }
 
     /**
@@ -77,8 +86,24 @@ class MaterialController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Material $material)
     {
-        //
+        if(
+            $material->drinks()->get() != '[]' ||
+            $material->branches()->get() != '[]' ||
+            $material->importVouchers()->get() != '[]' ||
+            $material->supplyVouchers()->get() != '[]' ||
+            $material->warehouses()->get() != '[]'
+          ){
+            return response()->json([
+                'msg' => 'Xoa nguyen lieu that bai'
+                // $material->branches()->get(),
+                // $material->warehouses()->get(),
+                // $material->drinks()->get(),
+                // $material->importVouchers()->get(),
+                // $material->supplyVouchers()->get(),
+            ],400);
+          }
+        return $material->delete();
     }
 }

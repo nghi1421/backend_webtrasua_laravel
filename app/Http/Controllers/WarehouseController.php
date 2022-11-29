@@ -3,6 +3,15 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreWarehouseRequest;
+use App\Http\Requests\UpdateWarehouseRequest;
+use App\Http\Resources\WarehouseCollection;
+use App\Http\Resources\WarehouseResource;
+use App\Models\Warehouse;
+// use App\Models\Staff;
+// use App\Models\Order;
+// use App\Models\Recipe;
+// use App\Models\Material;
 
 class WarehouseController extends Controller
 {
@@ -13,7 +22,7 @@ class WarehouseController extends Controller
      */
     public function index()
     {
-        //
+        return new WarehouseCollection(Warehouse::paginate(5));
     }
 
     /**
@@ -32,9 +41,9 @@ class WarehouseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreWarehouseRequest $request)
     {
-        //
+        
     }
 
     /**
