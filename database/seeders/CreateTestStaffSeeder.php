@@ -25,7 +25,6 @@ class CreateTestStaffSeeder extends Seeder
             'branch_id' => 1,
             'position_id' => 1,
             'id_login' => 1,
-            'email' => 'thanhnghi1421@gmail.com',
         ]);
         Staff::create([
             'name' => "Nguyen Thanh N",
@@ -37,7 +36,6 @@ class CreateTestStaffSeeder extends Seeder
             'active' => 1,
             'branch_id' => 1,
             'position_id' => 2,
-            'email' => 'abc123@gmail.com',
 
         ]);
         Staff::create([
@@ -50,7 +48,6 @@ class CreateTestStaffSeeder extends Seeder
             'active' => 1,
             'branch_id' => 1,
             'position_id' => 3,
-            'email' => 'acbxyz@gmail.com',
         ]);
         Staff::create([
             'name' => "Lê Hoàng K",
@@ -62,7 +59,6 @@ class CreateTestStaffSeeder extends Seeder
             'active' => 1,
             'branch_id' => 1,
             'position_id' => 4,
-            'email' => 'abc456@gmail.com',
         ]);
         Staff::create([
             'name' => "Đinh Văn B",
@@ -74,7 +70,6 @@ class CreateTestStaffSeeder extends Seeder
             'active' => 1,
             'branch_id' => 1,
             'position_id' => 5,
-            'email' => 'acbyyy@gmail.com',
         ]);
     }
 }

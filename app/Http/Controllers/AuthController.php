@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\StaffResource;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Resources\CustomerResource;
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\Role;
+// use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -109,41 +112,21 @@ class AuthController extends Controller
      *     )
      * )
      */
-    public function register(Request $request){
-        $data = Validator::make($request->all(),[
-            'username' => 'required|string|unique:users,username',
-            'password' => [
-                'required',
-                'confirmed',
-                Password::min(8)->mixedCase()->numbers()->symbols()
-            ],
-            'role_id' => 'required',
-            'staff_id' => 'required',
-        ]);
-
-        if( $data->fails() ){
-            return response([
-                'msg' => 'Invalid inputs',
-            ], 400);
-        }
-
-        /** @var \App\Models\User $user */
-        $user = User::create([
-            'username' => $data['username'],
-            'password' => bcrypt($data['password']),
-            'role_id' => $data['role_id'],
-        ]);
-        
+    public function register(StoreUserRequest $request){
+        $data = $request->all();
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
         $token = $user->createToken('main')->plainTextToken;
 
-        $staff_inf = Staff::where('id',$data['staff_id'])->first();
+        $staff_inf = Staff::find($data['staff_id']);
+
         $staff_inf['id_login'] = $user['id'];
         $staff_inf->save();
 
-        return response([
-            'staff_information' => $staff_inf,
+        return response()->json([
+            'staff_information' => new StaffResource($staff_inf),
             'token' => $token,
-            'msg' => 'Dang ki thanh cong'
+            'newUser' => $user
         ],200);
     }
 
@@ -235,29 +218,32 @@ class AuthController extends Controller
      */
     public function login(Request $request){
         $credentials = $request->validate([
-            'username' => 'required|string|exists:users,username',
+            'email' => 'required|email|exists:users,email',
             'password' => [
                 'required'
             ],
+            'remember' => 'boolean'
         ]);
 
         $remember = $credentials['remember'] ?? false;
         unset($credentials['remember']);
         if(!Auth::attempt($credentials, $remember)){
             return response([
-                'msg' => 'Xac thuc khong hop le',
+                'error' => 'Xác thực không hợp lệ',
+                $credentials
             ], 422);
         }
 
         $user = Auth::user();
 
-        $role = Role::where('id',$user['role_id'])->first();
+        // $role = Role::where('id',$user['role_id'])->first();
 
         $user_info =  Staff::where('id_login',$user['id'])->first();
 
         $token = $user->createToken('main')->plainTextToken;
-        return response([
-            'role' => $role,
+
+        return response()->json([
+            // 'role' => $role,
             'information' => $user_info,
             'token' => $token,
         ]);
@@ -382,8 +368,7 @@ class AuthController extends Controller
         $validation = $request->validate([
             'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:9'
         ]);
-        // $validation = $request->all();
-        $info_cus = Customer::where('phone_number',$validation['phone_number'])->first();
+        $info_cus = new CustomerResource(Customer::where('phone_number',$validation['phone_number'])->first());
         
         if(!$info_cus){
             return response()->json([
@@ -391,9 +376,11 @@ class AuthController extends Controller
             ],400);
         }
         $login_customer = [
-            'username' => 'allcustomer123',
+            'email' => 'allcustomer123@gmail.com',
             'password' => 'ThanhNghi123`',
         ];
+
+
 
         Auth::attempt($login_customer);
         $user = Auth::user();

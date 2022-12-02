@@ -22,7 +22,6 @@ class Staff extends Model
         'branch_id',
         'position_id',
         'id_login',
-        'email',
     ];
 
     public $timestamps = false;

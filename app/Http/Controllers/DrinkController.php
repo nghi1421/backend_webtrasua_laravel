@@ -19,7 +19,7 @@ class DrinkController extends Controller
      */
     public function index()
     {
-        //
+        return new DrinkCollection(new DrinkResource(Drink::paginate(5)));
     }
 
     /**

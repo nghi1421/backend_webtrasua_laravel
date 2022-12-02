@@ -15,13 +15,13 @@ class AccountForAllCustomerSeeder extends Seeder
     {
         User::create([
             'id' => 1,
-            'username' => "admin123",
+            'email' => "admin123@gmail.com",
             'password' => bcrypt("ThanhNghi123`"),
             'role_id' => 1,
         ]);
         User::create([
             'id' => 2,
-            'username' => "allcustomer123",
+            'email' => "allcustomer123@gmail.com",
             'password' => bcrypt("ThanhNghi123`"),
             'role_id' => 6,
         ]);

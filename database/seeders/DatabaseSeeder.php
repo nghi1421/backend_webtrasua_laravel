@@ -24,6 +24,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(WarehouseSeeder::class);
         // $this->call(TypeOfDrinkSeeder::class);
         // $this->call(DrinkSeeder::class);
-       
+        $this->call(AddressSeeder::class);
     }
 }
