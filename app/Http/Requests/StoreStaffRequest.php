@@ -32,8 +32,6 @@ class StoreStaffRequest extends FormRequest
             'branch_id' => ['required'],
             'position_id' => ['required'],
             'dob' => ['date'],
-            'position_id' => ['required'],
-            'email' => ['required','email','unique:staffs,email'],
             'active' => ['required','boolean'],
         ];
 

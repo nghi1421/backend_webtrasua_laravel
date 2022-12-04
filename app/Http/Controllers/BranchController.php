@@ -13,6 +13,7 @@ use App\Models\Branch;
 use App\Models\Staff;
 use App\Models\Order;
 use App\Models\Material;
+use Illuminate\Support\Facades\DB; 
 
 
 class BranchController extends Controller
@@ -45,7 +46,21 @@ class BranchController extends Controller
      */
     public function store(StoreBranchRequest $request)
     {   
-        return new BranchResource(Branch::create($request->all()));
+        $new_branch = DB::transaction(function () use ($request) {
+            $all_data = $request->all();
+            $new_branch = Branch::create($all_data);
+            foreach($all_data['list_material'] as $material){
+                $new_branch->materials()->attach($material['id'], ['amount'=> $material['amount']]);
+            }
+            return $new_branch;
+        });
+
+        $new_branch['materialsOfBranch'] = $this->getMaterialBranch($new_branch);
+        return response()->json([
+            'status' => "success",
+            'msg' => "Thêm chi nhánh thành công.",
+            "newBranchInfo" => $new_branch
+        ]); 
     }
 
     /**
@@ -56,47 +71,13 @@ class BranchController extends Controller
      */
     public function show(Branch $branch)
     {
-        // foreach ($branch->materials() as $material) {
-        //     return response()->json([
-        //         $material,
-        //     ]);
-        // }
-        // Branch::find($branch['id']);
-        $branchMaterial = $branch->materials()->get();
 
-        $material_all = Material::get();
-        $material_branch = [];
-        $material_left = new MaterialCollection($material_all);
-        $index = 0;
-        foreach ($branchMaterial as $material) {
+        $branch['materialsOfBranch'] = $this->getMaterialBranch($branch);
 
-            $material_branch[$index] = [
-                'id' => $material['id'],
-                'name' => $material['name'],
-                'uom' => $material['uom'],
-                'amount' => $material['pivot']['amount']
-            ];
 
-            // unset($material_left[array_search($material_left, array_keys([
-            //     'id' => $material['id'],
-            //     'name' => $material['name'],
-            //     'uom' => $material['uom'],
-            // ]))]);
-            // // $material_left =array_filter($material_left, function($element) {
-            // //     return ($element[0]['id'] != $material['id']);
-            // //  });
-            $index +=1;
-        }
-        
-        // foreach($material_left as $material){
-        //     unset($material_left[array_search($material, $material_left)]);
-        // }
-
-        Branch::find($branch['id']);
         return response()->json([
-            'branchInfo' => new BranchResource($branch),
-            'branchMaterial' => $material_branch,
-            'allMaterial' => $material_left
+            'status' => 'success',
+            'branchInfo' => $branch,
         ]);
     }
 
@@ -120,7 +101,22 @@ class BranchController extends Controller
      */
     public function update(UpdateBranchRequest $request,Branch $branch)
     {
-        $branch->update($request->all());
+        $branchInfo = DB::transaction(function () use ($request, $branch) {
+            $all_data = $request->all();
+            $branch->update($all_data);
+
+            foreach($all_data['list_material'] as $material){
+                $branch->materials()->updateExistingPivot($material['id'], ['amount'=> $material['amount']], false);
+            }
+            return $branch;
+        });
+
+        $branchInfo['materialsOfBranch'] = $this->getMaterialBranch($branchInfo);
+        return response()->json([
+            'status' => "success",
+            'msg' => "Sửa thông tin chi nhánh thành công.",
+            "branchInfo" => $branchInfo
+        ]);
     }
 
     /**
@@ -132,12 +128,107 @@ class BranchController extends Controller
     public function destroy($id)
     {
         $branch =  Branch::find($id);
-        if($branch->orders()->get() != '[]' || $branch->staffs()->get() != '[]' || $branch->materials()->get() != '[]') {
+        if($branch->orders()->get() != '[]' || $branch->staffs()->get() != '[]') {
             return response()->json([
-                'msg' => 'Xoa chi nhanh that bai'
+                'status' => 'error',
+                'msg' => 'Chi nhánh đã có nhân viên. Xóa chi nhánh thất bại.'
             ],400);
         }
 
-        return $branch->delete();
+        foreach($branch->materials()->get() as $material) {
+            if($material['pivot']['amount']!=0){
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Chi nhánh đang có nguyên liệu tồn. Xóa chi nhánh thất bại.'
+                ],401 );
+            }
+        }
+
+        $branchInfo = DB::transaction(function () use ($branch) {
+            foreach($branch->materials()->get() as $material){
+                $branch->materials()->detach($material['id']);
+            }
+            $branch->delete();
+            return $branch;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => "Xóa thông tin chi nhánh thành công."
+        ]);
+    }
+
+    public function active($id){
+        $branch = Branch::find($id);
+
+        if($branch['active'] ==  true){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Chi nhánh đang thiết lập hoạt động.',
+            ],422);
+        }
+
+        $branch['active'] = true;
+        
+        try{
+            $branch->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập hoạt động thành công.',
+        ]);
+    }
+
+    public function inActive($id){
+        $branch = Branch::find($id);
+
+        if($branch['active'] == false){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Chi nhánh đang thiết lập ngưng hoạt động.',
+            ],422);
+        }
+
+        $branch['active'] = false;
+        $branch->update();
+
+        try{
+            $branch->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập ngừng hoạt động thành công.',
+        ]);
+    }
+
+
+    public function getMaterialBranch($branch){
+        $branchMaterial = $branch->materials()->get();
+        $material_branch = [];
+        $index = 0;
+        foreach ($branchMaterial as $material) {
+            $material_branch[$index] = [
+                'id' => $material['id'],
+                'name' => $material['name'],
+                'uom' => $material['uom'],
+                'amount' => $material['pivot']['amount']
+            ];
+            $index +=1;
+        }
+        return $material_branch;
     }
 }

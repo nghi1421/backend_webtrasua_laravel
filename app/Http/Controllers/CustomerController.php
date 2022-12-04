@@ -9,6 +9,7 @@ use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Order;
+use Illuminate\Support\Facades\DB; 
 
 
 class CustomerController extends Controller
@@ -88,7 +89,21 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        return new CustomerResource(Customer::create($request->all()));
+        try{
+            $new_cus = new CustomerResource(Customer::create($request->all()));
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thêm khách hàng thành công',
+            'newCustomer' => $new_cus,
+        ]);
     }
 
     /**
@@ -122,7 +137,30 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $customer->update($request->all());
+        try{
+            $customer1 =  $customer->update($request->all());
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        
+
+        if(!$customer1){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Sửa thông tin khách hàng thất bại',
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Sửa khách hàng thành công',
+            'customer' => new CustomerResource($customer),
+        ]);
     }
 
     /**
@@ -133,24 +171,81 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
-        if($customer->orders()=='{}'){
+        if($customer->orders()->get() !='[]'){
             return response()->json([
-                $customer->orders()
+                'status' => 'error',
+                'msg' => "Khách hàng đã mua hàng không thể xóa."
             ],400);
         }
-        $customer->delete();
-        return $customer->delete();
+
+        DB::transaction(function () use ($customer){
+
+            foreach($customer->addresses()->get() as $address){
+                $address->delete();
+            }
+            $customer->delete();
+        });
+        
+        return response()->json([
+            'status' => 'success',
+            'msg' => "Xóa thông tin khách hàng thành công."
+        ]);
     }
 
     public function active($id){
         $customer = Customer::find($id);
+
+        if($customer['active'] ==  true){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Khách hàng đang thiết lập hoạt động.',
+            ],422);
+        }
+
         $customer['active'] = true;
-        $customer->update();
+        
+        try{
+            $customer->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập hoạt động thành công.',
+        ]);
     }
 
     public function inActive($id){
         $customer = Customer::find($id);
+
+        if($customer['active'] == false){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Nhân viên đang thiết lập ngưng hoạt động.',
+            ],422);
+        }
+
         $customer['active'] = false;
         $customer->update();
+
+        try{
+            $customer->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập ngừng hoạt động thành công.',
+        ]);
     }
 }

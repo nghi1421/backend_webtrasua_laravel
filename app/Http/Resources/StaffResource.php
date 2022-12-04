@@ -27,7 +27,7 @@ class StaffResource extends JsonResource
             'hometown' => $this->hometown,
             'dob' => $this->dob,
             'branch' => new BranchResource(Branch::where('id',$this->branch_id)->first()),
-            'positionId' => new PositionResource(Position::where('id',$this->position_id)->first()),
+            'position' => new PositionResource(Position::where('id',$this->position_id)->first()),
             'active' => $this->active,
         ];
     }

@@ -114,6 +114,7 @@ class AuthController extends Controller
      */
     public function register(StoreUserRequest $request){
         $data = $request->all();
+        
         $data['password'] = bcrypt($data['password']);
         $user = User::create($data);
         $token = $user->createToken('main')->plainTextToken;
@@ -229,22 +230,24 @@ class AuthController extends Controller
         unset($credentials['remember']);
         if(!Auth::attempt($credentials, $remember)){
             return response([
-                'error' => 'Xác thực không hợp lệ',
-                $credentials
+                'status' => 'error',
+                'msg' => "Xác thực không thành công."
             ], 422);
         }
 
         $user = Auth::user();
 
-        // $role = Role::where('id',$user['role_id'])->first();
+        $role = Role::where('id',$user['role_id'])->first();
 
-        $user_info =  Staff::where('id_login',$user['id'])->first();
+        $user_info =  new StaffResource(Staff::where('id_login',$user['id'])->first());
 
         $token = $user->createToken('main')->plainTextToken;
 
         return response()->json([
-            // 'role' => $role,
+            'status' => 'success',
+            'msg' => "Đăng nhập thành công.",
             'information' => $user_info,
+            'roleUser' => $role,
             'token' => $token,
         ]);
 
@@ -301,7 +304,8 @@ class AuthController extends Controller
         $user->currentAccessToken()->delete();
 
         return response([
-            'msg' => "Dang xuat thanh cong",
+            'status' => 'success',
+            'msg' => "Đăng xuất thành công.",
         ]);
     }
 
@@ -368,29 +372,34 @@ class AuthController extends Controller
         $validation = $request->validate([
             'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:9'
         ]);
-        $info_cus = new CustomerResource(Customer::where('phone_number',$validation['phone_number'])->first());
+
+        $cus = Customer::where('phone_number',$validation['phone_number'])->first();
         
-        if(!$info_cus){
+        if(!$cus){
             return response()->json([
-                'msg' => "Khachh hang chua co tai khoan"
+                'status' => 'fail',
+                'fakeOTP' => random_int(100000,999999),
+                'msg' => "Khách hàng chưa có tài khoản."
             ],400);
         }
+
+        $info_cus = new CustomerResource($cus);
+
         $login_customer = [
             'email' => 'allcustomer123@gmail.com',
             'password' => 'ThanhNghi123`',
         ];
 
-
-
         Auth::attempt($login_customer);
         $user = Auth::user();
         $token = $user->createToken('customer')->plainTextToken;
-        // $token = 1;
-        return response([
-            'information' => $info_cus,
-            'token' => $token,
-            'msg' => "Dang nhap khach hang thanh cong"
-        ]);
 
+        return response([
+            'status' => 'success',
+            'msg' => "Đăng nhập thành công.",
+            'information' => $info_cus,
+            'roleUser' =>  Role::find(6),
+            'token' => $token,
+        ]);
     }
 }

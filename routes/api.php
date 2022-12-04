@@ -30,6 +30,7 @@ Route::prefix('/admin')->group( function () {
         Route::apiResource('/staffs', StaffController::class);
         Route::post('/staffs/active/{id}', [StaffController::class, 'active']);
         Route::post('/staffs/inactive/{id}', [StaffController::class, 'inActive']);
+        Route::get('/positions',[StaffController::class, 'getPosition']);
 
         Route::apiResource('/customers', CustomerController::class);
         Route::post('/customers/active/{id}', [CustomerController::class, 'active']);

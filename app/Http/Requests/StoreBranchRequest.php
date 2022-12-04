@@ -30,11 +30,14 @@ class StoreBranchRequest extends FormRequest
                 'required',
                 'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                 'min:9',
+                'unique:branches,phone_number'
             ],
             'date_opened' => ['date'],
             'active' => ['required'],
             'list_material' => ['required','array', 'min:1'],
-            'list_material.amount' => ['required'],
+            'list_material.*.id' => ['integer'],
+            'list_material.*.amount' => ['required'],
+            
         ];
     }
 }

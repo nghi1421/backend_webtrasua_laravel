@@ -21,7 +21,7 @@ class CustomerResource extends JsonResource
             'gender'  => $this->gender,
             'phoneNumber'  => $this->phone_number,
             'dob'  => $this->dob,
-            'addresses' => new AddressCollection(Address::where('customer_id', $this->id)->get()),
+            'addresses' => new AddressCollection(Address::where('customer_id', $this->id)->get()) == '[]' ? '[]' : new AddressCollection(Address::where('customer_id', $this->id)->get()),
             'active'  => $this->active,
         ];
     }

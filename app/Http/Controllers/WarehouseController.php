@@ -8,6 +8,8 @@ use App\Http\Requests\UpdateWarehouseRequest;
 use App\Http\Resources\WarehouseCollection;
 use App\Http\Resources\WarehouseResource;
 use App\Models\Warehouse;
+use Illuminate\Support\Facades\DB; 
+
 // use App\Models\Staff;
 // use App\Models\Order;
 // use App\Models\Recipe;
@@ -43,7 +45,21 @@ class WarehouseController extends Controller
      */
     public function store(StoreWarehouseRequest $request)
     {
-        
+        $new_warehouse = DB::transaction(function () use ($request) {
+            $all_data = $request->all();
+            $new_warehouse = Warehouse::create($all_data);
+            foreach($all_data['list_material'] as $material){
+                $new_warehouse->materials()->attach($material['id'], ['amount'=> $material['amount']]);
+            }
+            return $new_warehouse;
+        });
+
+        $new_warehouse['materialsOfBranch'] = $this->getMaterialBranch($new_warehouse);
+        return response()->json([
+            'status' => "success",
+            'msg' => "Thêm nhà kho thành công.",
+            "newWarehouseInfo" => $new_warehouse
+        ]);
     }
 
     /**
@@ -75,9 +91,24 @@ class WarehouseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateWarehouseRequest $request,Warehouse $warehouse)
     {
-        //
+        $warehouseInfo = DB::transaction(function () use ($request, $warehouse) {
+            $all_data = $request->all();
+            $warehouse->update($all_data);
+
+            foreach($all_data['list_material'] as $material){
+                $warehouse->materials()->updateExistingPivot($material['id'], ['amount'=> $material['amount']], false);
+            }
+            return $warehouse;
+        });
+
+        $warehouseInfo['materialsOfwarehouse'] = $this->getMaterialWarehouse($warehouseInfo);
+        return response()->json([
+            'status' => "success",
+            'msg' => "Sửa thông tin kho thành công.",
+            "warehouseInfo" => $warehouseInfo
+        ]);
     }
 
     /**
@@ -88,6 +119,108 @@ class WarehouseController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $warehouse =  Warehouse::find($id);
+        if($warehouse->orders()->get() != '[]' || $warehouse->staffs()->get() != '[]') {
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Xóa chi nhánh thất bại.'
+            ],400);
+        }
+
+        foreach($warehouse->materials()->get() as $material) {
+            if($material['pivot']['amount']!=0){
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => 'Kho đang có nguyên liệu tồn. Xóa chi nhánh thất bại.'
+                ],401 );
+            }
+        }
+
+        $warehouseInfo = DB::transaction(function () use ($warehouse) {
+            foreach($warehouse->materials()->get() as $material){
+                $warehouse->materials()->detach($material['id']);
+            }
+            $warehouse->delete();
+            return $warehouse;
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => "Xóa thông tin chi nhánh thành công."
+        ]); 
+    }
+
+    public function active($id){
+        $warehouse = Branch::find($id);
+
+        if($warehouse['active'] ==  true){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Chi nhánh đang thiết lập hoạt động.',
+            ],422);
+        }
+
+        $warehouse['active'] = true;
+        
+        try{
+            $warehouse->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập hoạt động thành công.',
+        ]);
+    }
+
+    public function inActive($id){
+        $warehouse = Branch::find($id);
+
+        if($warehouse['active'] == false){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Chi nhánh đang thiết lập ngưng hoạt động.',
+            ],422);
+        }
+
+        $warehouse['active'] = false;
+        $warehouse->update();
+
+        try{
+            $warehouse->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập ngừng hoạt động thành công.',
+        ]);
+    }
+
+
+    public function getMaterialWarehouse($warehouse){
+        $warehouseMaterial = $warehouse->materials()->get();
+        $material_warehouse = [];
+        $index = 0;
+        foreach ($warehouseMaterial as $material) {
+            $material_warehouse[$index] = [
+                'id' => $material['id'],
+                'name' => $material['name'],
+                'uom' => $material['uom'],
+                'amount' => $material['pivot']['amount']
+            ];
+            $index +=1;
+        }
+        return $material_warehouse;
     }
 }

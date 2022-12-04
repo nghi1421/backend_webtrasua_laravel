@@ -34,6 +34,10 @@ class StoreWarehouseRequest extends FormRequest
             ],
             'date_opened' => ['date'],
             'active' => ['required'],
+            'list_material' => ['required','array', 'min:1'],
+            'list_material.*.id' => ['integer'],
+            'list_material.*.amount' => ['required'],
+            
         ];
     }
 }

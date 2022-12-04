@@ -22,7 +22,7 @@ class Customer extends Model
     public $timestamps = false;
 
     public function addresses(){
-        return $this->belongsTo(Address::class);
+        return $this->hasMany(Address::class);
     }
 
     public function user(){

@@ -45,8 +45,8 @@ class UpdateCustomerRequest extends FormRequest
                     'regex:/(0)[0-9]/',
                     'not_regex:/[a-z]/',
                     'min:9',
-                    'unique:customers,
-                    phone_number,' . $this->phone_number
+                    // 'unique:customers,
+                    // phone_number,' . $this->phone_number
                 ],
                 'dob' => ['date'],
             ];

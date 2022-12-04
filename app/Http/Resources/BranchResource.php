@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+// use App\Http\Resources\Materials
+use App\Models\Branch;
 
 class BranchResource extends JsonResource
 {
@@ -14,6 +16,19 @@ class BranchResource extends JsonResource
      */
     public function toArray($request)
     {
+        $branchMaterial = Branch::find($this->id)->materials()->get();
+        $index = 0 ;
+        $material_branch = [];
+        foreach ($branchMaterial as $material) {
+            $material_branch[$index] = [
+                'id' => $material['id'],
+                'name' => $material['name'],
+                'uom' => $material['uom'],
+                'amount' => $material['pivot']['amount']
+            ];
+            $index+=1;
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -21,6 +36,7 @@ class BranchResource extends JsonResource
             'phoneNumber' => $this->phone_number,
             'dateOpened' => $this->date_opened,
             'active' => $this->active,
+            'materialsOfBranch' => $material_branch,
         ];
     }
 }

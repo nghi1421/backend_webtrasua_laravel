@@ -26,16 +26,18 @@ class UpdateWarehouseRequest extends FormRequest
         $method = $this->method();
         if( $method == "PUT"){
             return [
-                'name' => ['required'],
+                'name' => ['sometimes','required'],
                 'address' => ['required'],
                 'phone_number' => [
                     'required',
-                    'regex:/(0)[0-9]/',
-                    'not_regex:/[a-z]/',
+                    'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                     'min:9',
                 ],
                 'date_opened' => ['date'],
                 'active' => ['required'],
+                'list_material' => ['required','array', 'min:1'],
+                'list_material.*.id' => ['integer'],
+                'list_material.*.amount' => ['required'],
             ];
         }
         else{
@@ -43,14 +45,15 @@ class UpdateWarehouseRequest extends FormRequest
                 'name' => ['sometimes','required'],
                 'address' => ['sometimes','required'],
                 'phone_number' => [
-                    'sometimes',
-                    'required',
-                    'regex:/(0)[0-9]/',
-                    'not_regex:/[a-z]/',
+                    'sometimes','required',
+                    'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                     'min:9',
                 ],
                 'date_opened' => ['date'],
                 'active' => ['sometimes','required'],
+                'list_material' => ['sometimes','required','array', 'min:1'],
+                'list_material.*.id' => ['integer'],
+                'list_material.*.amount' => ['sometimes','required'],
             ];
         }
     }

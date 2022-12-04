@@ -7,9 +7,13 @@ use App\Http\Requests\UpdateStaffRequest;
 use App\Http\Requests\StoreStaffRequest;
 use App\Http\Resources\StaffCollection;
 use App\Http\Resources\StaffResource;
+use App\Http\Resources\PositionCollection;
+use App\Http\Resources\PositionResource;
 use App\Models\Staff;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Position;
+
 
 class StaffController extends Controller
 {
@@ -88,7 +92,20 @@ class StaffController extends Controller
         // return response()->json([
         //     'msg' => 'Them nhan vien thanh cong',        
         // ]);
-        return new StaffResource(Staff::create($request->all()));
+        try {
+            $new_staff = new StaffResource(Staff::create($request->all()));
+        }
+        catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thêm nhân viên thành công',
+            'newStaff' => $new_staff,
+        ]);
     }
 
     /**
@@ -105,7 +122,35 @@ class StaffController extends Controller
         // ]) :  response()->json([
         //     'msg' => 'Thong tin nhan vien khong ton tai'
         // ],400);
-        return new StaffResource($staff);
+
+        // if(!$staff){
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'msg' => $e->getMessage(),
+        //     ],422);
+        // }
+
+        try{
+            $staff_info = new StaffResource($staff);
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        if (!$staff_info){
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Mã nhân viên không tồn tại',
+            ],201);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'staff_infomation' => $staff_info,
+        ]);
     }
 
     /**
@@ -128,8 +173,21 @@ class StaffController extends Controller
      */
     public function update(UpdateStaffRequest $request, Staff $staff)
     {
-        $staff->update($request->all());
-    
+        
+        try{
+            $staff->update($request->all());
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Sửa thông tin nhân viên thành công.',
+        ]);
     }
 
     /**
@@ -141,31 +199,99 @@ class StaffController extends Controller
     public function destroy(Staff $staff)
     {
         if(
-            $staff->importVouchers() == "{}" ||
-            $staff->supplyVouchers() == "{}" ||
-            $staff->orders() == "{}"
+            $staff->importVouchers()->get() != "[]" ||
+            $staff->supplyVouchers()->get() != "[]" ||
+            $staff->orders()->get() != "[]"
         ) {
             return response()->json([
+                'status' => 'false',
                 'msg' => "Nhan vien da lap don khong the xoa",
             ],400);
         }
 
         if($staff['id_login'])
             User::find($staff['id_login'])->delete();
-        $staff->delete();
+
+        try{
+            $staff->delete();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Xoa nhân viên thành công',
+        ]);
     }
 
 
     public function active($id){
         $staff = Staff::find($id);
+
+        if($staff['active'] ==  true){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Nhân viên đang thiết lập hoạt động.',
+            ],422);
+        }
+
         $staff['active'] = true;
-        $staff->update();
+        
+        try{
+            $staff->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập hoạt động thành công.',
+        ]);
     }
 
     public function inActive($id){
         $staff = Staff::find($id);
+
+        if($staff['active'] == false){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Nhân viên đang thiết lập ngưng hoạt động.',
+            ],422);
+        }
+
         $staff['active'] = false;
         $staff->update();
+
+        try{
+            $staff->update();
+        }
+        catch(Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thiết lập ngừng hoạt động thành công.',
+        ]);
+    }
+
+    public function getPosition(){
+        $position = new PositionCollection(Position::paginate(5));
+        return response()->json([
+            'status' => 'success',
+            'positions' => $position
+        ]);
     }
 
     //function support------------------------------------------------
