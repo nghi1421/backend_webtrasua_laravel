@@ -34,6 +34,7 @@ class DrinkSeeder extends Seeder
         $new_drink->sizes()->attach(2);
         $new_drink->sizes()->attach(3);
 
+
         $new_drink = Drink::create([
             'id' => 2,
             'name' => "Hồng trà sữa",

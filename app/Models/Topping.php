@@ -15,6 +15,7 @@ class Topping extends Model
         'name',
         'price',
         'active',
+        'drink_id'
     ]; 
 
     public $timestamps = false;

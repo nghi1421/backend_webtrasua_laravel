@@ -13,7 +13,7 @@ class StoreDrinkRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,30 @@ class StoreDrinkRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required'],
+            'slug' => ['string'],
+            'description' => ['string'],
+            'price' => [
+                    'required',
+                    'numeric'
+                ],
+            'discount' => ['required', 'numeric'],
+            'image' => ['required', 'url'],
+            'active' => ['required', 'boolean'],
+            'tod_id' => ['required', 'exists:type_of_drinks,id'],
+            'active' => ['required'],
+            'recipe' => ['required','array', 'min:1'],
+            'recipe.*.id' => ['required','integer'],
+            'recipe.*.amount' => ['required'],
+
+            'topping' => ['array'],
+            'topping.*.name' => ['string'],
+            'topping.*.price' => ['numeric'],
+            'topping.*.active' => ['boolean'],
+
+            'size' => ['array'],
+            'size.*.id' => ['integer'],
+            'size.*.active' => ['boolean'],
         ];
     }
 }

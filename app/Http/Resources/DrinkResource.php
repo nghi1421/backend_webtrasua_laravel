@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\TypeOfDrink;
+
 
 class DrinkResource extends JsonResource
 {
@@ -25,7 +25,8 @@ class DrinkResource extends JsonResource
             'salesOnDay' => $this->sales_on_day,
             'imageSource' => $this->image,
             'active' => $this->active,
-            'typeOfDrink' => TypeOfDrink::find($this->tod_id),
+            'typeOfDrink' => $this->typeOfDrink()->get(),
+            'toppings' => $this->toppings()->get(), 
         ];
     }
 }

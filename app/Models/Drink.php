@@ -19,7 +19,7 @@ class Drink extends Model
         'sales_on_day',
         'image',
         'active',
-        
+        'tod_id'
     ];
 
     public $timestamps = false;
@@ -34,5 +34,9 @@ class Drink extends Model
 
     public function sizes(){
         return $this->belongsToMany(Size::class, 'drink_details', 'drink_id', 'size_id')->withPivot('active');
+    }
+
+    public function typeOfDrink(){
+        return $this->belongsTo(TypeOfDrink::class,'tod_id','id');
     }
 }

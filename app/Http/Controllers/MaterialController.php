@@ -106,4 +106,11 @@ class MaterialController extends Controller
           }
         return $material->delete();
     }
+
+    public function getAllMaterial(){
+        return response()->json([
+            'status' => 'success',
+            'data' => new MaterialCollection(Material::get())
+        ]);
+    }
 }

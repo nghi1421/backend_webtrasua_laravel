@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\StaffResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\CustomerResource;
+use App\Http\Resources\StaffAuthResource;
+
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\Customer;
@@ -239,8 +241,15 @@ class AuthController extends Controller
 
         $role = Role::where('id',$user['role_id'])->first();
 
-        $user_info =  new StaffResource(Staff::where('id_login',$user['id'])->first());
+        $user_info =  new StaffAuthResource(Staff::where('id_login',$user['id'])->first());
 
+        if($user_info['active']==0){
+            return response([
+                'status' => 'error',
+                'msg' => "Xác thực không thành công."
+            ], 422);
+        }
+        
         $token = $user->createToken('main')->plainTextToken;
 
         return response()->json([

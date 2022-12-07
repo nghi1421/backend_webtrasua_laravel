@@ -9,6 +9,15 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\DrinkController;
+use App\Http\Controllers\SupplyVoucherController;
+use App\Http\Controllers\ImportVoucherController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SizeController;
+
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -45,10 +54,20 @@ Route::prefix('/admin')->group( function () {
         Route::post('/warehouses/inactive/{id}', [WarehouseController::class, 'inActive']);
 
         Route::apiResource('/materials', MaterialController::class);
+        Route::get('/get-materials', [MaterialController::class, 'getAllMaterial']);
 
         Route::apiResource('/drinks', DrinkController::class);
-        Route::post('/warehouses/active/{id}', [DrinkController::class, 'active']);
-        Route::post('/warehouses/inactive/{id}', [DrinkController::class, 'inActive']);
+        Route::post('/drinks/active/{id}', [DrinkController::class, 'active']);
+        Route::post('/drinks/inactive/{id}', [DrinkController::class, 'inActive']);
+
+        Route::apiResource('/supplyvouchers', SupplyVoucherController::class);
+
+        Route::apiResource('/importvouchers', ImportVoucherController::class);
+
+        Route::apiResource('/orders', OrderController::class);
+
+        Route::apiResource('/sizes', SizeController::class);
+
     });
     
     Route::post('/register',[AuthController::class, 'register']);
@@ -61,6 +80,7 @@ Route::prefix('/admin')->group( function () {
 // });
 
 Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);
+Route::get('/sizes', [DrinkController::class, 'getAllSize']);
 
 Route::post('/login-customer',[AuthController::class, 'loginCustomer']);
 

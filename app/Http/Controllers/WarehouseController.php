@@ -54,7 +54,7 @@ class WarehouseController extends Controller
             return $new_warehouse;
         });
 
-        $new_warehouse['materialsOfBranch'] = $this->getMaterialBranch($new_warehouse);
+        $new_warehouse['materialsOfBranch'] = $this->getMaterialWarehouse($new_warehouse);
         return response()->json([
             'status' => "success",
             'msg' => "Thêm nhà kho thành công.",
@@ -68,9 +68,14 @@ class WarehouseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Warehouse $warehouse)
     {
-        //
+        $warehouse['materialsOfWarehouse'] = $this->getMaterialWarehouse($warehouse);
+
+        return response()->json([
+            'status' => 'success',
+            'warehouseInfo' => $warehouse,
+        ]);
     }
 
     /**
@@ -120,10 +125,10 @@ class WarehouseController extends Controller
     public function destroy($id)
     {
         $warehouse =  Warehouse::find($id);
-        if($warehouse->orders()->get() != '[]' || $warehouse->staffs()->get() != '[]') {
+        if($warehouse->importVouchers()->get() != '[]' || $warehouse->supplyVouchers()->get() != '[]') {
             return response()->json([
                 'status' => 'error',
-                'msg' => 'Xóa chi nhánh thất bại.'
+                'msg' => 'Xóa thông tin nhà kho thất bại thất bại.'
             ],400);
         }
 
@@ -131,7 +136,7 @@ class WarehouseController extends Controller
             if($material['pivot']['amount']!=0){
                 return response()->json([
                     'status' => 'error',
-                    'msg' => 'Kho đang có nguyên liệu tồn. Xóa chi nhánh thất bại.'
+                    'msg' => 'Kho đang có nguyên liệu tồn. Xóa nhà kho thất bại.'
                 ],401 );
             }
         }
@@ -146,12 +151,12 @@ class WarehouseController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'msg' => "Xóa thông tin chi nhánh thành công."
+            'msg' => "Xóa thông tin nhà kho thành công."
         ]); 
     }
 
     public function active($id){
-        $warehouse = Branch::find($id);
+        $warehouse = Warehouse::find($id);
 
         if($warehouse['active'] ==  true){
             return response()->json([
@@ -179,8 +184,8 @@ class WarehouseController extends Controller
     }
 
     public function inActive($id){
-        $warehouse = Branch::find($id);
 
+        $warehouse = Warehouse::find($id);
         if($warehouse['active'] == false){
             return response()->json([
                 'status' => 'error',
