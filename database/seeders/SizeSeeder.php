@@ -22,7 +22,7 @@ class SizeSeeder extends Seeder
 
         Size::create([
             'id' => 2,
-            'name' => 'S',
+            'name' => 'M',
             'ratio' => 1.2,
         ]);
         

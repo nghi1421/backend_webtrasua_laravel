@@ -13,7 +13,7 @@ class UpdateSize extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,24 @@ class UpdateSize extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if( $method  == 'PUT'){
+            return [
+                'name' => [
+                    'required',
+                    'unique:sizes,name,'.$this->name
+                ],
+                'ratio' => ['required','numeric']
+            ];
+        }
+        else{
+            return [
+                'name' => [
+                    'sometimes','required',
+                    'unique:sizes,name,'.$this->name
+                ],
+                'ratio' => ['sometimes','required','numeric']
+            ];
+        }
     }
 }

@@ -13,8 +13,7 @@ use App\Http\Controllers\SupplyVoucherController;
 use App\Http\Controllers\ImportVoucherController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SizeController;
-
-
+use App\Http\Controllers\ShippingProviderController;
 
 
 
@@ -74,6 +73,9 @@ Route::prefix('/admin')->group( function () {
     Route::post('/login',[AuthController::class, 'login']);
 
 });
+
+Route::apiResource('/shippingproviders', ShippingProviderController::class);
+
 
 // Route::middleware('auth:sanctum')->group(function (){
 //     Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);

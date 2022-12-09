@@ -18,6 +18,6 @@ class ShippingProvider extends Model
     public $timestamps = false;
 
     public function orders(){
-        return $this->hasMany(Order::class);
+        return $this->hasMany(Order::class, 'shipping_id', 'id');
     }
 }

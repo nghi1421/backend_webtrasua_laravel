@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\BranchResource;
+use App\Http\Resources\BranchForStaffResource;
 use App\Models\Branch;
 use App\Http\Resources\PositionResource;
 use App\Models\Position;
@@ -26,7 +26,7 @@ class StaffResource extends JsonResource
             'address' => $this->address,
             'hometown' => $this->hometown,
             'dob' => $this->dob,
-            'branch' => new BranchResource(Branch::where('id',$this->branch_id)->first()),
+            'branch' => new BranchForStaffResource(Branch::where('id',$this->branch_id)->first()),
             'position' => new PositionResource(Position::where('id',$this->position_id)->first()),
             'active' => $this->active,
         ];

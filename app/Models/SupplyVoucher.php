@@ -14,6 +14,8 @@ class SupplyVoucher extends Model
     protected $fillable = [
         'created_at',
         'status',
+        'staff_id',
+        'warehouse_id',
     ]; 
 
     public $timestamps = false;

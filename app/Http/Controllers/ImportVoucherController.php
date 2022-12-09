@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\ImportVoucherResource;
+use App\Http\Resources\ImportVoucherCollection;
+use App\Models\ImportVoucher;
 
 class ImportVoucherController extends Controller
 {
@@ -13,7 +16,10 @@ class ImportVoucherController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'status' => 'success',
+            'data' => new ImportVoucherCollection(ImportVoucher::paginate(5)),
+        ]);
     }
 
     /**
@@ -45,7 +51,17 @@ class ImportVoucherController extends Controller
      */
     public function show($id)
     {
-        //
+        $importVouher = ImportVoucher::find($id);
+        if($importVouher == null){
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Không tìm thấy"
+            ],422);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => new ImportVoucherResource($importVouher),
+        ]);
     }
 
     /**

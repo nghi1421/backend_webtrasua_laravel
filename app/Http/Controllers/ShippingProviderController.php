@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreShippingProvider;
+use App\Http\Requests\UpdateShippingProvider;
+
+
+use App\Models\ShippingProvider;
 
 class ShippingProviderController extends Controller
 {
@@ -13,7 +18,11 @@ class ShippingProviderController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'status' => "success",
+            'data' => ShippingProvider::get(),
+            
+        ]);
     }
 
     /**
@@ -23,7 +32,7 @@ class ShippingProviderController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -32,9 +41,22 @@ class ShippingProviderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreShippingProvider $request)
     {
-        //
+        $new_shippingprovider = ShippingProvider::create($request->all());
+
+        if($new_shippingprovider == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Thêm thông tin đối tác vận chuyển thất bại'
+            ],422);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'msg' => 'Thêm thông tin đối tác vận chuyển thành công',
+            'newShippingProvider' => $new_shippingprovider,
+        ]);
     }
 
     /**
@@ -45,7 +67,17 @@ class ShippingProviderController extends Controller
      */
     public function show($id)
     {
-        //
+        $shipping_provider = ShippingProvider::find($id);
+        if($shipping_provider == null){
+            return response()->json([
+                'status' => 'fail',
+                'msg' => 'Đối tác vận chuyển không tồn tại.',
+            ],422);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => $shipping_provider,
+        ]);
     }
 
     /**
@@ -66,9 +98,20 @@ class ShippingProviderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateShippingProvider $request, $id)
     {
-        //
+        $shipping_provider = ShippingProvider::find($id);
+        if($shipping_provider == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Đối tác vận chuyển không tồn tại."
+            ],422);
+        }
+        return response()->json([
+            'status' => 'success',
+            'msg' => "Sửa thông tin thành công",
+            'shippingProvider' => $shipping_provider->update($request->all()),
+        ]); 
     }
 
     /**
@@ -79,6 +122,34 @@ class ShippingProviderController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $shipping_provider = ShippingProvider::find($id);
+        if($shipping_provider == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Đối tác vận chuyển không tồn tại."
+            ],422);
+        }
+        
+        if($shipping_provider->orders()->get() != '[]'){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Xóa thất bại."
+            ],422);
+        }
+
+        try {
+            $shipping_provider->delete();
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Xóa thành công."
+            ]);
+
+        } catch(Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Xóa thất bại."
+            ],422);
+        }
+
     }
 }

@@ -30,6 +30,7 @@ class DrinkSeeder extends Seeder
         $new_drink->materials()->attach(2, ['amount' => 0.015]);
         $new_drink->materials()->attach(3, ['amount' => 0.025]);
         $new_drink->materials()->attach(4, ['amount' => 0.01]);
+        
         $new_drink->sizes()->attach(1);
         $new_drink->sizes()->attach(2);
         $new_drink->sizes()->attach(3);

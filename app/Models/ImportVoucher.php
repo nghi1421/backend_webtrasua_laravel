@@ -14,6 +14,9 @@ class ImportVoucher extends Model
     protected $fillable = [
         'created_at',
         'status',
+        'staff_id',
+        'warehouse_id',
+        'provider_id',
     ];
 
     public $timestamps = false;
@@ -31,7 +34,7 @@ class ImportVoucher extends Model
     }
 
     public function materials(){
-        return $this->belongsToMany(Materials::class, 'import_details', 'imp_vou_id', 'material_id')->withPivot('amount');
+        return $this->belongsToMany(Material::class, 'import_details', 'imp_vou_id', 'material_id')->withPivot('amount');
     }
     
 }

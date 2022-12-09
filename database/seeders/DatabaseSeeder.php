@@ -25,6 +25,10 @@ class DatabaseSeeder extends Seeder
         // $this->call(TypeOfDrinkSeeder::class);
         // $this->call(DrinkSeeder::class);
         // $this->call(AddressSeeder::class);
-        $this->call(ToppingSeeder::class);
+        // $this->call(ToppingSeeder::class);
+        // $this->call(ShippingProviderSeeder::class);
+        // $this->call(ProviderSeeder::class);
+        // $this->call(SupplyVoucherSeeder::class);
+        $this->call(ImportVoucherSeeder::class);
     }
 }

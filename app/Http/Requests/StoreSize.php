@@ -13,7 +13,7 @@ class StoreSize extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class StoreSize extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => [
+                'required',
+                'unique:sizes,name'
+            ],
+            'ratio' => ['required','numeric']
         ];
     }
 }

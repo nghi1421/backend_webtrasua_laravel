@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SupplyVoucher;
+use App\Http\Resources\SupplyVoucherResource;
+use App\Http\Resources\SupplyVoucherCollection;
 
 class SupplyVoucherController extends Controller
 {
@@ -13,7 +16,10 @@ class SupplyVoucherController extends Controller
      */
     public function index()
     {
-        //
+        return response()->json([
+            'status' => 'success',
+            'data' => new SupplyVoucherCollection(SupplyVoucher::paginate(5)),
+        ]);
     }
 
     /**
@@ -45,7 +51,17 @@ class SupplyVoucherController extends Controller
      */
     public function show($id)
     {
-        //
+        $supplyVoucher = SupplyVoucher::find($id);
+        if($supplyVoucher == null){
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Không tìm thấy"
+            ],422);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => new SupplyVoucherResource($supplyVoucher),
+        ]);
     }
 
     /**

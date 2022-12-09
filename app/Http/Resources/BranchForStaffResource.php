@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProviderResource extends JsonResource
+class BranchForStaffResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,6 +19,8 @@ class ProviderResource extends JsonResource
             'name' => $this->name,
             'address' => $this->address,
             'phoneNumber' => $this->phone_number,
+            'dateOpened' => $this->date_opened,
+            'active' => $this->active
         ];
     }
 }

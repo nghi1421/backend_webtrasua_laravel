@@ -13,7 +13,7 @@ class UpdateShippingProvider extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,16 @@ class UpdateShippingProvider extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == "PUT"){
+            return [
+                'name' => ['required', 'unique:shipping_providers,name,'.$this->name],
+           ];
+        }
+        else{
+            return [
+                'name' => ['sometimes', 'required', 'unique:shipping_providers,name,'.$this->name],
+           ];
+        }
     }
 }

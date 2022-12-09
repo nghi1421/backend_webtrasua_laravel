@@ -13,7 +13,7 @@ class Size extends Model
 
     protected $fillable = [
         'name',
-        'radio',
+        'ratio',
     ];
 
     public $timestamps = false;
