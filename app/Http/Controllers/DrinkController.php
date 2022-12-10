@@ -7,6 +7,9 @@ use App\Http\Resources\DrinkAdminResource;
 use App\Http\Resources\DrinkAdminCollection;
 use App\Http\Requests\StoreDrinkRequest;
 use App\Http\Requests\UpdateDrinkRequest;
+use App\Http\Resources\DrinkCollection;
+use App\Http\Resources\DrinkResource;
+
 use App\Models\Drink;
 use App\Models\DrinkDetail;
 use App\Models\Size;
