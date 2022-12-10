@@ -15,6 +15,20 @@ class DrinkResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        $size_drink = $this->sizes()->get();
+        $sizes = [];
+        $index = 0;
+        foreach ($size_drink as $size) {
+            $sizes[$index] = [
+                'id' => $size['pivot']['id'],
+                'name' => $size['name'],
+                'price' => $size['ratio']*$this['price'],
+                'active' => $size['pivot']['active'],
+            ];
+            $index +=1;
+        }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -26,7 +40,8 @@ class DrinkResource extends JsonResource
             'imageSource' => $this->image,
             'active' => $this->active,
             'typeOfDrink' => $this->typeOfDrink()->get(),
-            'toppings' => $this->toppings()->get(), 
+            'toppings' => $this->toppings()->get(),
+            'size' => $sizes
         ];
     }
 }

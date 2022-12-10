@@ -33,7 +33,7 @@ class Drink extends Model
     }
 
     public function sizes(){
-        return $this->belongsToMany(Size::class, 'drink_details', 'drink_id', 'size_id')->withPivot('active');
+        return $this->belongsToMany(Size::class, 'drink_details', 'drink_id', 'size_id')->withPivot(['id','active']);
     }
 
     public function typeOfDrink(){
