@@ -15,7 +15,7 @@ class AddBranchInImportVouchersTable extends Migration
     {
         Schema::table('supply_vouchers', function (Blueprint $table) {
             $table->unsignedBigInteger('branch_id')->nullable();
-            $table->foreign('branch_id')->references('id')->on('branchs');
+            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 
