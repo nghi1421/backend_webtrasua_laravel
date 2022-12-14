@@ -14,6 +14,7 @@ use App\Http\Controllers\ImportVoucherController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ShippingProviderController;
+use App\Http\Controllers\ProviderController;
 
 
 
@@ -66,6 +67,10 @@ Route::prefix('/admin')->group( function () {
         Route::apiResource('/orders', OrderController::class);
 
         Route::apiResource('/sizes', SizeController::class);
+
+        Route::apiResource('/providers', ProviderController::class);
+
+        Route::get('/get-all-providers', [ProviderController::class, 'getAllProviders']);
 
     });
     

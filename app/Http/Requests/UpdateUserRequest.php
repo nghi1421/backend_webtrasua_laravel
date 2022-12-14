@@ -26,7 +26,7 @@ class UpdateUserRequest extends FormRequest
         $method = $this->methed();
         if( $method == "PUT"){
             return [
-                'email' => 'required|email|string|unique:users,email',
+                'email' => ['required,email,string,',Rule::unique('users', 'email')->ignore($this->user)],
                 'password' => [
                     'required',
                     'confirmed',
@@ -38,7 +38,7 @@ class UpdateUserRequest extends FormRequest
         }
         else{
             return [
-                'email' => 'sometimes','required|email|string|unique:users,email',
+                'email' => 'sometimes',['required,email,string,',Rule::unique('users', 'email')->ignore($this->user)],
                 'password' => [
                     'sometimes','required',
                     'confirmed',

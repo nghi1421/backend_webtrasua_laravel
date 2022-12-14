@@ -16,6 +16,12 @@ class Order extends Model
         'paid',
         'note',
         'status',
+        'staff_id',
+        'branch_id',
+        'shipping_id',
+        'customer_id',
+        'address_id',
+        'quantity',
     ];
 
     public $timestamps = false;
@@ -37,6 +43,6 @@ class Order extends Model
     }
 
     public function drinkDetails(){
-        return $this->belongsToMany(DrinkDetail::class, 'order_details',  'order_id','drink_detail_id')->withPivot(['quantity','topping_list']);;
+        return $this->belongsToMany(DrinkDetail::class, 'order_details',  'order_id','drink_detail_id')->withPivot(['quantity', 'price','topping_list']);;
     }
 }

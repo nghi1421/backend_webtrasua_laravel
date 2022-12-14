@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProvider extends FormRequest
 {
@@ -13,7 +14,7 @@ class UpdateProvider extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,20 @@ class UpdateProvider extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == 'PUT'){
+            return [
+                'name' => ['required', Rule::unique('providers', 'name')->ignore($this->provider)],
+                'address' => [],
+                'phone_number' => ['required', Rule::unique('providers', 'phone_number')->ignore($this->provider)],
+            ];
+        }
+        else{
+            return [
+                'name' => ['sometimes','required', Rule::unique('providers', 'name')->ignore($this->provider)],
+                'address' => ['sometimes'],
+                'phone_number' => ['sometimes','required', Rule::unique('providers', 'phone_number')->ignore($this->provider)],
+            ];
+        }
     }
 }

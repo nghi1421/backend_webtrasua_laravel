@@ -29,7 +29,7 @@ class UpdateStaffRequest extends FormRequest
             return [
                 'name' => ['required'],
                 'gender' => ['required'],
-                'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9'],
+                'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9', Rule::unique('staffs', 'phone_number')->ignore($this->staff)],
                 'address' => ['required'],
                 'hometown' => ['required'],
                 'branch_id' => ['required'],
@@ -42,7 +42,7 @@ class UpdateStaffRequest extends FormRequest
             return [
                 'name' => ['sometimes', 'required'],
                 'gender' => ['sometimes', 'required'],
-                'phone_number' => ['sometimes', 'required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9'],
+                'phone_number' => ['sometimes', 'required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9', Rule::unique('staffs', 'phone_number')->ignore($this->staff)],
                 'address' => ['sometimes', 'required'],
                 'hometown' => ['sometimes', 'required'],
                 'branch_id' => ['sometimes', 'required'],

@@ -13,7 +13,7 @@ class StoreImportVoucher extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class StoreImportVoucher extends FormRequest
     public function rules()
     {
         return [
-            //
+            'created_at' => [],
+            'status' => [],
+            'warehouse_id' => [],
+            'staff_id' => [],
+            'provider_id' => ['required'],
+            'import_details' => ['required','array'],
+            'import_details.*.material_id' => [''],
+            'import_details.*.amount' => ['numeric'],
         ];
     }
 }

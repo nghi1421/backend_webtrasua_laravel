@@ -13,7 +13,7 @@ class UpdateOrder extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,124 @@ class UpdateOrder extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == 'PUT'){
+            return [
+                'paid' =>[ 
+                    'required','boolean'
+                ],
+                'note' =>[ 
+                    'string'
+                ],
+                // 'created_at' =>[ 
+                //     'datetime'
+                // ],
+                'staff_id' => [
+                     'sometimes','exists:staffs,id'
+                ],
+                'customer_id' => [
+                     'sometimes','exists:customers,id'
+                ],
+                'address_id' => [
+                     'sometimes','exists:addresses,id'
+                ],
+                'branch_id' => [
+                     'sometimes','exists:branches,id'
+                ],
+                'shipping_id' => [
+                     'sometimes','exists:shippingproviders,id'
+                ],
+                'order_detail' => [
+                    'required',
+                    'array',
+                    'min:1'
+                ],
+                'order_detail.*.drink_detail_id' => [
+                    'required',
+                    'exists:drink_details,id',
+                ],
+                'order_detail.*.quantity' => [
+                    'required',
+                    'numeric'
+                ],
+                'order_detail.*.price' => [
+                    'required',
+                ],
+                'order_detail.*.topping_list' => [
+                    'array',
+                ],
+                'order_detail.*.topping_list.*.quan' => [
+                    'required',
+                    'numeric'
+                ]
+                ,
+                'order_detail.*.topping_list.*.topping' => [
+                    'required',
+                    'array',
+                ],
+                'order_detail.*.topping_list.*.topping.*.topping_id' => [
+                    'required', 'exists:toppings,id'
+                ]
+            ];
+        }
+        else{
+            return [
+                'paid' =>[ 
+                    'sometimes','required','boolean'
+                ],
+                'note' =>[ 
+                    'string'
+                ],
+                // 'created_at' =>[ 
+                //     'datetime'
+                // ],
+                'staff_id' => [
+                     'sometimes','exists:staffs,id'
+                ],
+                'customer_id' => [
+                     'sometimes','exists:customers,id'
+                ],
+                'address_id' => [
+                     'sometimes','exists:addresses,id'
+                ],
+                'branch_id' => [
+                     'sometimes','exists:branches,id'
+                ],
+                'shipping_id' => [
+                     'sometimes','exists:shippingproviders,id'
+                ],
+                'order_detail' => [
+                    'sometimes','required',
+                    'array',
+                    'min:1'
+                ],
+                'order_detail.*.drink_detail_id' => [
+                    'sometimes','required',
+                    'exists:drink_details,id',
+                ],
+                'order_detail.*.quantity' => [
+                    'sometimes','required',
+                    'numeric'
+                ],
+                'order_detail.*.price' => [
+                    'sometimes','required',
+                ],
+                'order_detail.*.topping_list' => [
+                    'array',
+                ],
+                'order_detail.*.topping_list.*.quan' => [
+                    'sometimes','required',
+                    'numeric'
+                ]
+                ,
+                'order_detail.*.topping_list.*.topping' => [
+                    'sometimes','required',
+                    'array',
+                ],
+                'order_detail.*.topping_list.*.topping.*.topping_id' => [
+                    'sometimes','required', 'exists:toppings,id'
+                ]
+            ];
+        }
     }
 }

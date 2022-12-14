@@ -24,7 +24,7 @@ class StoreDrinkRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required'],
+            'name' => ['required', 'unique:drinks,name'],
             'slug' => ['string'],
             'description' => ['string'],
             'price' => [

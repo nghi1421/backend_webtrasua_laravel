@@ -77,7 +77,29 @@ class MaterialController extends Controller
      */
     public function update(UpdateMaterialRequest $request, Material $material)
     {
-        $material->update($request->all());
+        if($material->drinks()->get() != '[]' ||
+         $material->warehouses()->get() != '[]'||
+          $material->branches()->get() != '[]'|| 
+          $material->importVouchers()->get() != '[]'||
+           $material->supplyVouchers()->get() != '[]'){
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Không thể sửa nguyên liệu'
+            ],422);
+           }
+        if($material->update($request->all())){
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Cập nhật thông tin thành công'
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => 'error',
+                'msg' => 'Không thể sửa nguyên liệu'
+            ],422);
+        }
+
     }
 
     /**
@@ -96,15 +118,16 @@ class MaterialController extends Controller
             $material->warehouses()->get() != '[]'
           ){
             return response()->json([
+                'status' => 'error',
                 'msg' => 'Xoa nguyen lieu that bai'
-                // $material->branches()->get(),
-                // $material->warehouses()->get(),
-                // $material->drinks()->get(),
-                // $material->importVouchers()->get(),
-                // $material->supplyVouchers()->get(),
             ],400);
           }
-        return $material->delete();
+
+        return response()->json([
+            'status' => 'error',
+            'msg' => 'Xóa nguyên liệu thất bại'
+        ],400);
+        
     }
 
     public function getAllMaterial(){

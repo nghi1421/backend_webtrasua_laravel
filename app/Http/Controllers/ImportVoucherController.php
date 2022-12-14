@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ImportVoucher;
 use App\Http\Resources\ImportVoucherResource;
 use App\Http\Resources\ImportVoucherCollection;
-use App\Models\ImportVoucher;
+use App\Http\Requests\StoreImportVoucher;
+use App\Http\Requests\UpdateImportVoucher;
+
+use Illuminate\Support\Facades\DB; 
 
 class ImportVoucherController extends Controller
 {
@@ -38,9 +42,29 @@ class ImportVoucherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreImportVoucher $request)
     {
-        //
+        $newInfo = DB::transaction(function () use ($request) {
+            $data = $request->all();
+            $new_import_voucher = ImportVoucher::create($data);
+            foreach($data['import_details'] as $material){
+                $new_import_voucher->materials()->attach($material['material_id'], ['amount' => $material['amount']]);
+            }
+            return $new_import_voucher;
+        });
+
+        if($newInfo == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Thêm phiếu nhập hàng thất bại.",
+            ],422);
+        }else{
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Thêm phiếu nhập hàng thành công.",
+                'newImportVoucher' => $newInfo
+            ]);
+        }
     }
 
     /**
@@ -82,9 +106,38 @@ class ImportVoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateImportVoucher $request, $id)
     {
-        //
+        $import_voucher = ImportVoucher::find($id);
+        if($import_voucher == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Không tìm thấy phiếu nhập.",
+            ],422); 
+        }
+
+        $info = DB::transaction(function () use ($request, $import_voucher) {
+            $data = $request->all();
+            $import_detail = [];
+            $import_voucher->update($data);
+            foreach($data['import_details'] as $key => $material){
+                $import_detail[$material['material_id']] = ['amount' => $material['amount']];
+            }
+            $import_voucher->materials()->sync($import_detail);
+            return $import_voucher;
+        });
+
+        if($info == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Sửa phiếu nhập hàng thất bại.",
+            ],422);
+        }else{
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Sửa phiếu nhập hàng thành công.",
+            ]);
+        }
     }
 
     /**
@@ -95,6 +148,32 @@ class ImportVoucherController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $imoprt_voucher = ImportVoucher::find($id);
+        if($imoprt_voucher == null){
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Không tìm thấy phiếu nhập.",
+            ],422); 
+        }
+
+        if($imoprt_voucher['status'] == 0 ){
+
+            if($imoprt_voucher->materials()->get() == "[]"){
+                return response()->json([
+                    'status' => 'fail',
+                    'msg' => "Phiếu nhập hàng không thể xóa.",
+                ],422); 
+            }
+            if($imoprt_voucher->delete())
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => "Xóa thông tin phiếu nhập hàng thành công."
+                ]);
+        }else{
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Phiếu nhập hàng đã xác nhận không thể xóa.",
+            ],422); 
+        }
     }
 }

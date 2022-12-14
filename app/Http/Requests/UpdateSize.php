@@ -28,7 +28,7 @@ class UpdateSize extends FormRequest
             return [
                 'name' => [
                     'required',
-                    'unique:sizes,name,'.$this->name
+                    Rule::unique('sizes', 'name')->ignore($this->size)
                 ],
                 'ratio' => ['required','numeric']
             ];
@@ -37,7 +37,7 @@ class UpdateSize extends FormRequest
             return [
                 'name' => [
                     'sometimes','required',
-                    'unique:sizes,name,'.$this->name
+                    Rule::unique('sizes', 'name')->ignore($this->size)
                 ],
                 'ratio' => ['sometimes','required','numeric']
             ];

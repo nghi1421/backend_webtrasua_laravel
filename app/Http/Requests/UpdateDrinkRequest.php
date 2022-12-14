@@ -26,7 +26,7 @@ class UpdateDrinkRequest extends FormRequest
         $method = $this->method();
         if($method == 'PUT'){
             return [
-                'name' => ['required'],
+                'name' => ['required', Rule::unique('drinks', 'name')->ignore($this->drink)],
                 'slug' => ['string'],
                 'description' => ['string'],
                 'price' => [

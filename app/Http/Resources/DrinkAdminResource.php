@@ -32,7 +32,7 @@ class DrinkAdminResource extends JsonResource
         $index = 0;
         foreach ($size_drink as $size) {
             $sizes[$index] = [
-                'id' => $size['id'],
+                'id' => $size['pivot']['id'],
                 'name' => $size['name'],
                 'ratio' => $size['ratio'],
                 'active' => $size['pivot']['active'],

@@ -26,12 +26,13 @@ class UpdateWarehouseRequest extends FormRequest
         $method = $this->method();
         if( $method == "PUT"){
             return [
-                'name' => ['sometimes','required'],
+                'name' => ['sometimes','required', Rule::unique('warehouses', 'name')->ignore($this->warehouse)],
                 'address' => ['required'],
                 'phone_number' => [
                     'required',
                     'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                     'min:9',
+                    Rule::unique('warehouses', 'phone_number')->ignore($this->warehouse)
                 ],
                 'date_opened' => ['date'],
                 'active' => ['required'],
@@ -42,12 +43,13 @@ class UpdateWarehouseRequest extends FormRequest
         }
         else{
             return [
-                'name' => ['sometimes','required'],
+                'name' => ['sometimes','required', Rule::unique('warehouses', 'name')->ignore($this->warehouse)],
                 'address' => ['sometimes','required'],
                 'phone_number' => [
                     'sometimes','required',
                     'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                     'min:9',
+                    Rule::unique('warehouses', 'phone_number')->ignore($this->warehouse)
                 ],
                 'date_opened' => ['date'],
                 'active' => ['sometimes','required'],

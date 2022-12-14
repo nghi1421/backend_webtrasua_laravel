@@ -31,7 +31,7 @@ class UpdateCustomerRequest extends FormRequest
                     'required',
                     'regex:/(0)[0-9]/','not_regex:/[a-z]/',
                     'min:9',
-                    // 'unique:customers,phone_number,' . $this->phone_number
+                    Rule::unique('customers', 'phone_number')->ignore($this->customer)
                 ],
                 'dob' => ['date'],
             ];

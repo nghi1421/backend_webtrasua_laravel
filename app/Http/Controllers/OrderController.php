@@ -3,6 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Topping;
+use App\Models\Drink;
+use App\Models\DrinkDetail;
+use App\Models\Size;
+
+use App\Http\Requests\StoreOrder;
+use App\Http\Requests\UpdateOrder;
+
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderCollection;
+
+use Illuminate\Support\Facades\DB; 
 
 class OrderController extends Controller
 {
@@ -13,7 +26,7 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        return new OrderCollection(Order::paginate(5));
     }
 
     /**
@@ -32,9 +45,51 @@ class OrderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreOrder $request)
     {
-        //
+        $data = $request->all();
+
+        $result = DB::transaction(function () use ($data){
+
+            $data['status'] = 1;
+            $new_order = Order::create($data);
+
+            foreach($data['order_detail'] as $key => $order_detail){
+                $topping_list = [];
+                foreach($order_detail['topping_list'] as $key1 => $toppings){
+                    $topping_list[$key1]['quan'] = $toppings['quan'];
+                    $topping_list[$key1]['price'] = [];
+                    foreach($toppings['topping'] as $key2 => $topping){
+                        $topping_list[$key1]['price'][$key2] = Topping::select('price')->where('id', $topping['topping_id'])->first()->price + 0;
+                        $topping_list[$key1]['topping'][$key2] = $topping['topping_id'];
+                    }
+                    // $topping_list[$key1]['topping'] = $toppings['topping'];
+                }
+
+                // return response(json_encode($topping_list));
+                $new_order->drinkDetails()->attach(
+                    $order_detail['drink_detail_id'],
+                    ['quantity' => $order_detail['quantity'],
+                    'price' => $order_detail['price'],
+                    'topping_list' => json_encode($topping_list)]
+                );
+            }
+            return $new_order;
+            
+        });
+
+        if($result == null){
+            return response()->json([
+                'status'   => 'error',
+                'msg' => "Them that bai"
+            ]);
+        }else{
+            return response()->json([
+                'status'   => 'success',
+                'msg' => "Them thanh cong",
+                'newOrder' => $result
+            ]);
+        }
     }
 
     /**
@@ -43,9 +98,44 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Order $order)
     {
-        //
+        $data = $order->drinkDetails()->get();
+        $order_details = [];
+        $toppingList = [];
+        $i = 0;
+
+        foreach($data as $order_detail){
+            $order_details[$i]['drinkDetail'] = DrinkDetail::find($order_detail['id']);
+            $order_details[$i]['drink_detail_id'] = $order_detail['id'];
+            $order_details[$i]['drinkName'] = Drink::select('name')->where('id', $order_details[$i]['drinkDetail']['drink_id'])->first()['name'];
+            $order_details[$i]['drinkSize'] = Size::select('name')->where('id', $order_details[$i]['drinkDetail']['size_id'])->first()['name'];
+            $order_details[$i]['quantity'] = $order_detail['pivot']['quantity'];
+            $order_details[$i]['price'] = $order_detail['pivot']['price'];    
+
+            if($order_detail['pivot']['topping_list'] != null){
+               $order_details[$i]['topping_list']  = json_decode($order_detail['pivot']['topping_list'], true);
+                foreach($order_details[$i]['topping_list'] as $key => $toppings){
+                    foreach($toppings['topping'] as $key_topping => $topping_id){
+                        $topping_info = Topping::select('id','name')->where('id',$topping_id)->first();
+                        $topping_info['price'] = $toppings['price'][$key_topping];
+                        $order_details[$i]['topping_list'][$key]['toppingInfo'][$key_topping] = $topping_info;
+                    }
+                    unset($order_details[$i]['topping_list'][$key]['price']);
+                    unset($order_details[$i]['topping_list'][$key]['topping']);
+                }
+            }else{
+                $order_details[$i]['topping_list'] == 'null';
+            }
+            unset($order_details[$i]['drinkDetail']);
+            $i +=1;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'order' => new OrderResource($order),
+            'orderDetail' => $order_details
+        ]);
     }
 
     /**

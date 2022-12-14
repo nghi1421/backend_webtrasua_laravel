@@ -13,7 +13,7 @@ class UpdateImportVoucher extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +23,31 @@ class UpdateImportVoucher extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        $method = $this->method();
+        if($method == 'PUT'){
+            return [
+                'created_at' => [],
+            'status' => [],
+            'warehouse_id' => [],
+            'staff_id' => [],
+            'provider_id' => ['required'],
+            'import_details' => ['required','array'],
+            'import_details.*.material_id' => [''],
+            'import_details.*.amount' => ['numeric'],
+            ];
+            
+        }
+        else{
+            return[
+                'created_at' => ['sometimes'],
+                'status' => ['sometimes'],
+                'warehouse_id' => ['sometimes'],
+                'staff_id' => ['sometimes'],
+                'provider_id' => ['sometimes','required'],
+                'import_details' => ['sometimes','required','array'],
+                'import_details.*.material_id' => ['sometimes',''],
+                'import_details.*.amount' => ['sometimes','numeric'],
+            ];   
+        }
     }
 }

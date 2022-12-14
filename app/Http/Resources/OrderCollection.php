@@ -14,6 +14,9 @@ class OrderCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'status' => 'success',
+            'data' => $this->collection,      
+        ];;
     }
 }

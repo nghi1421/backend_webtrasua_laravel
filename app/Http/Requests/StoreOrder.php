@@ -13,7 +13,7 @@ class StoreOrder extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,61 @@ class StoreOrder extends FormRequest
     public function rules()
     {
         return [
-            //
+            'paid' =>[ 
+                'required','boolean'
+            ],
+            'note' =>[ 
+                // 'string'
+            ],
+            // 'created_at' =>[ 
+            //     'timestamp'
+            // ],
+            'staff_id' => [
+                //  'sometimes','exists:staffs,id'
+            ],
+            'customer_id' => [
+                //  'sometimes','exists:customers,id'
+            ],
+            'address_id' => [
+                //  'sometimes','exists:addresses,id'
+            ],
+            'branch_id' => [
+                //  'sometimes','exists:branches,id'
+            ],
+            'shipping_id' => [
+                //  'sometimes','exists:shipping_providers,id'
+            ],
+            'order_detail' => [
+                // 'required',
+                'array',
+                'min:1'
+            ],
+            'order_detail.*.drink_detail_id' => [
+                'required',
+                'exists:drink_details,id',
+            ],
+            'order_detail.*.quantity' => [
+                'required',
+                'numeric'
+            ],
+            'order_detail.*.price' => [
+                'required',
+            ],
+            'order_detail.*.topping_list' => [
+                'array',
+            ],
+            'order_detail.*.topping_list.*.quan' => [
+                'required',
+                'numeric'
+            ]
+            ,
+            'order_detail.*.topping_list.*.topping' => [
+                'required',
+                'array',
+            ],
+            'order_detail.*.topping_list.*.topping.*.topping_id' => [
+                // 'required', 'exists:toppings,id'
+            ]
         ];
     }
 }

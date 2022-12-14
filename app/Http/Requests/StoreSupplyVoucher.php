@@ -13,7 +13,7 @@ class StoreSupplyVoucher extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,14 @@ class StoreSupplyVoucher extends FormRequest
     public function rules()
     {
         return [
-            //
+            'created_at' => [],
+            'status' => [],
+            'warehouse_id' => [],
+            'staff_id' => [],
+            'branch_id' => ['required'],
+            'supply_details' => ['required','array'],
+            'supply_details.*.material_id' => [''],
+            'supply_details.*.amount' => ['numeric'],
         ];
     }
 }

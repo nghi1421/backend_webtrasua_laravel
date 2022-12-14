@@ -26,12 +26,12 @@ class UpdateShippingProvider extends FormRequest
         $method = $this->method();
         if($method == "PUT"){
             return [
-                'name' => ['required', 'unique:shipping_providers,name,'.$this->name],
+                'name' => ['required', Rule::unique('shipping_providers', 'name')->ignore($this->shipping_provider)],
            ];
         }
         else{
             return [
-                'name' => ['sometimes', 'required', 'unique:shipping_providers,name,'.$this->name],
+                'name' => ['sometimes', 'required', Rule::unique('shipping_providers', 'name')->ignore($this->shipping_provider)],
            ];
         }
     }

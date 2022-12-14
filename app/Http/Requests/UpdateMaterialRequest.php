@@ -27,6 +27,7 @@ class UpdateMaterialRequest extends FormRequest
         if($method == 'PUT'){
             return [
                 'name' => [
+                    Rule::unique('materials', 'name')->ignore($this->material),
                     'required',
                 ],
                 'uom' => ['required']
@@ -35,6 +36,7 @@ class UpdateMaterialRequest extends FormRequest
         else{
             return [
                 'name' => [
+                    Rule::unique('materials', 'name')->ignore($this->material),
                     'sometimes',
                     'required'
                     

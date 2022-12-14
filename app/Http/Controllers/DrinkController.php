@@ -26,7 +26,10 @@ class DrinkController extends Controller
      */
     public function index()
     {
-        return new DrinkAdminCollection(new DrinkAdminResource(Drink::paginate(5)));
+        return response()->json([
+            'status' => 'success',
+            'data' => Drink::paginate(5)
+        ]); 
     }
 
     /**

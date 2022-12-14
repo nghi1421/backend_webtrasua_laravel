@@ -13,7 +13,7 @@ class StoreProvider extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class StoreProvider extends FormRequest
     public function rules()
     {
         return [
-            //
+            'name' => ['required', 'unique:providers,name'],
+            'address' => [],
+            'phone_number' => ['required', 'unique:providers,phone_number'],
         ];
     }
 }
