@@ -63,10 +63,8 @@ class OrderController extends Controller
                         $topping_list[$key1]['price'][$key2] = Topping::select('price')->where('id', $topping['topping_id'])->first()->price + 0;
                         $topping_list[$key1]['topping'][$key2] = $topping['topping_id'];
                     }
-                    // $topping_list[$key1]['topping'] = $toppings['topping'];
                 }
 
-                // return response(json_encode($topping_list));
                 $new_order->drinkDetails()->attach(
                     $order_detail['drink_detail_id'],
                     ['quantity' => $order_detail['quantity'],

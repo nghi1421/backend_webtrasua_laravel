@@ -116,28 +116,42 @@ class ImportVoucherController extends Controller
             ],422); 
         }
 
-        $info = DB::transaction(function () use ($request, $import_voucher) {
-            $data = $request->all();
-            $import_detail = [];
-            $import_voucher->update($data);
-            foreach($data['import_details'] as $key => $material){
-                $import_detail[$material['material_id']] = ['amount' => $material['amount']];
-            }
-            $import_voucher->materials()->sync($import_detail);
-            return $import_voucher;
-        });
-
-        if($info == null){
+        if($import_voucher['status'] == 0){
             return response()->json([
-                'status' => 'error',
-                'msg' => "Sửa phiếu nhập hàng thất bại.",
+                'status' => 'fail',
+                'msg' => "Phiếu nhập hàng đã hủy không thể sửa.",
             ],422);
-        }else{
-            return response()->json([
-                'status' => 'success',
-                'msg' => "Sửa phiếu nhập hàng thành công.",
-            ]);
         }
+        elseif($import_voucher['status'] == 4){
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Phiếu nhập hàng đã hoàn tất không thể sửa.",
+            ],422);
+        }
+        else{
+            $info = DB::transaction(function () use ($request, $import_voucher) {
+                $data = $request->all();
+                $import_detail = [];
+                $import_voucher->update($data);
+                foreach($data['import_details'] as $key => $material){
+                    $import_detail[$material['material_id']] = ['amount' => $material['amount']];
+                }
+                $import_voucher->materials()->sync($import_detail);
+                return $import_voucher;
+            });
+            if($info == null){
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => "Sửa phiếu nhập hàng thất bại.",
+                ],422);
+            }else{
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => "Sửa phiếu nhập hàng thành công.",
+                ]);
+            }
+        }
+        
     }
 
     /**

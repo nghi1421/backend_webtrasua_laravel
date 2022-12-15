@@ -44,6 +44,7 @@ class UpdateDrinkRequest extends FormRequest
                 'recipe.*.amount' => ['required'],
 
                 'topping' => ['array'],
+                'topping.*.id' => [],
                 'topping.*.name' => ['string'],
                 'topping.*.price' => ['numeric'],
                 'topping.*.active' => ['boolean'],
@@ -70,12 +71,6 @@ class UpdateDrinkRequest extends FormRequest
                 'recipe' => ['sometimes','required','array', 'min:1'],
                 'recipe.*.id' => ['sometimes','required','integer'],
                 'recipe.*.amount' => ['sometimes','required'],
-
-                'topping' => ['array'],
-                'topping.*.name' => ['string'],
-                'topping.*.price' => ['numeric'],
-                'topping.*.active' => ['boolean'],
-
 
                 'size' => ['array'],
                 'size.*.id' => ['integer'],

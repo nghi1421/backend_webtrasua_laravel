@@ -116,29 +116,43 @@ class SupplyVoucherController extends Controller
             ],422); 
         }
 
-        $info = DB::transaction(function () use ($request, $supply_voucher) {
-            $data = $request->all();
-            $supply_detail = [];
-            $supply_voucher->update($data);
-            foreach($data['supply_details'] as $key => $material){
-                $supply_detail[$material['material_id']] = ['amount' => $material['amount']];
-            }
-            $supply_voucher->materials()->sync($supply_detail);
-
-            return $supply_voucher;
-        });
-
-        if($info == null){
+        if($supply_voucher['status'] == 0){
             return response()->json([
-                'status' => 'error',
-                'msg' => "Sửa phiếu cung cấp thất bại.",
+                'status' => 'fail',
+                'msg' => "Phiếu cung cấp nguyên leieuj đã hủy không thể sửa.",
             ],422);
-        }else{
-            return response()->json([
-                'status' => 'success',
-                'msg' => "Sửa phiếu cung cấp thành công.",
-            ]);
         }
+        elseif($supply_voucher['status'] == 4){
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Phiếu cung cấp nguyên liệu đã hoàn tất không thể sửa.",
+            ],422);
+        }
+        else{
+            $info = DB::transaction(function () use ($request, $supply_voucher) {
+                $data = $request->all();
+                $supply_detail = [];
+                $supply_voucher->update($data);
+                foreach($data['supply_details'] as $key => $material){
+                    $supply_detail[$material['material_id']] = ['amount' => $material['amount']];
+                }
+                $supply_voucher->materials()->sync($supply_detail);
+                return $supply_voucher;
+            });
+
+            if($info == null){
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => "Sửa phiếu cung cấp thất bại.",
+                ],422);
+            }else{
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => "Sửa phiếu cung cấp thành công.",
+                ]);
+            }    
+        }
+       
     }
 
     /**

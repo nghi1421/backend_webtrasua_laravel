@@ -14,6 +14,7 @@ use App\Models\Drink;
 use App\Models\DrinkDetail;
 use App\Models\Size;
 use App\Models\Topping;
+use App\Models\TypeOfDrink;
 use Illuminate\Support\Facades\DB; 
  
 
@@ -114,57 +115,33 @@ class DrinkController extends Controller
      */
     public function update(Request $request,Drink $drink)
     {
-        $newInfo = DB::transaction(function () use ($request, $drink) {
+        $drink = DB::transaction(function () use ($request, $drink) {
             $data = $request->all();
-            $topping_data = $data['toppings'];
             $drink->update($data);
             $value_recipe = [];
             foreach($data['recipe'] as $material){
-                // $new_drink->materials()->attach($material['id'], ['amount' => $material['amount']]);
-                // $recipe = $new_drink->materials()->where('material_id',$material['id'])->firstOr(function () {
-                //     $new_drink->materials()->attach($material['id'], ['amount' => $material['amount']]);
-                // });;
-                // if($recipe->exists())
-                // $new_drink->materials()->updateExistingPivot($material['id'], ['amount'=> $material['amount']], false);
                 $value_recipe[$material['id']] = ['amount' => $material['amount']];
             }
             $drink->materials()->sync($value_recipe);
             foreach($data['size'] as $size){
                 $drink->sizes()->updateExistingPivot($size['id'], ['active'=> $size['active']], false);
             }
-            return ['drink' => $drink, 'toppingData' => $topping_data];
+
+            return $drink;
         });
 
-        $drink_details = DrinkDetail::where('drink_id', $newInfo['drink']['id'])->get();
-        
-        foreach($drink_details as $drink_detail){
-            foreach($drink_detail->orders()->get() as $order_details){
-                
-            }
+        if($drink){
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Sửa đồ uống thành công.",
+            ]);
         }
-
-        // foreach(Order::get() as $order){
-        //     foreach($order->drink_details()->get() as $drinkDetail){
-        //         if(Drink::find(DrinkDetail::where('drink_detail_id', $drinkDetail['drink_detail_id']->first()['drink_id'])->exists()){
-
-        //         }
-        //     }
-        //     if()
-        // }
-        // foreach($newInfo['toppingData'] as $topping){
-        //     Order
-        //     // $topping['drink_id'] = $newInfo['drink']['id'];
-        //     // $topping->update()
-        // }
-
-        // if($new_drink )
-        return response()->json([
-            'status' => 'success',
-            'msg' => "Sửa đồ uống thành công.",
-            gettype($drink_details),
-            $drink_details
-            // 'drink' => new DrinkAdminResource(Drink::find($newInfo['drink']['id'])),
-        ]);
+         else{
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Sửa đồ uống thất bại.",
+            ]);
+        }
     }
 
     /**
@@ -173,19 +150,52 @@ class DrinkController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Drink $drink)
     {
-        //
+        $drink_details  = DrinkDetail::where('drink_id', $drink['id'])->get();
+        foreach($drink_details as $drink_detail){
+            if($drink_detail->orders()->get() != '[]'){
+                return response()->json([
+                    'status' => 'fail',
+                    'msg' => "Xóa đồ uống thất bại."
+                ],422);
+            }
+        }
+        $result = DB::transaction(function () use($drink){
+            $drink->sizes()->sync([]);
+            $drink->materials()->sync([]);
+            $drink->toppings()->delete();
+            return $drink->delete();
+        });
+        
+        if($result){
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Xóa đồ uống thành công',
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'erro',
+                'msg' => 'Xóa đồ uống thất bại',
+            ]);
+        }
     }
 
     public function getAllDrinks(){
-        return new DrinkCollection(new DrinkResource(Drink::get()));
+        return new DrinkCollection(Drink::get());
     }
 
     public function getAllSize(){
         return response()->json([
             'status' => 'success',
             'sizes' => Size::get(),
+        ]);
+    }
+
+    public function getAllTypeOfDrink(){
+        return response()->json([
+            'status' => 'success',
+            'sizes' => TypeOfDrink::get(),
         ]);
     }
 }

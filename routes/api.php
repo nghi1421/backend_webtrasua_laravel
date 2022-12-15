@@ -15,6 +15,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ShippingProviderController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\ToppingController;
 
 
 
@@ -72,6 +73,10 @@ Route::prefix('/admin')->group( function () {
 
         Route::get('/get-all-providers', [ProviderController::class, 'getAllProviders']);
 
+        Route::delete('/toppings/{id}',[ToppingController::class, 'remove']);
+        Route::put('/toppings/{id}',[ToppingController::class, 'update']);
+        Route::post('/toppings',[ToppingController::class, 'create']);
+
     });
     
     Route::post('/register',[AuthController::class, 'register']);
@@ -80,6 +85,8 @@ Route::prefix('/admin')->group( function () {
 });
 
 Route::apiResource('/shippingproviders', ShippingProviderController::class);
+
+Route::get('/type-of-drinks', [DrinkController::class, 'getAllTypeOfDrink']);
 
 
 // Route::middleware('auth:sanctum')->group(function (){
