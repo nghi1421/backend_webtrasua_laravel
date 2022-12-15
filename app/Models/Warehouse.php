@@ -31,6 +31,6 @@ class Warehouse extends Model
     }
 
     public function supplyVouchers(){
-        return $this->hasMany(Supplyvoucher::class);
+        return $this->hasMany(SupplyVoucher::class);
     }
 }
