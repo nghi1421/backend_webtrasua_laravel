@@ -161,6 +161,7 @@ class DrinkController extends Controller
                 ],422);
             }
         }
+        
         $result = DB::transaction(function () use($drink){
             $drink->sizes()->sync([]);
             $drink->materials()->sync([]);

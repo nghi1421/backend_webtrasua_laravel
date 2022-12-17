@@ -14,7 +14,6 @@ use App\Models\User;
 use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\Role;
-// use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {

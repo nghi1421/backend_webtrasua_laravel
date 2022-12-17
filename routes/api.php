@@ -16,6 +16,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ShippingProviderController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ToppingController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -76,6 +77,9 @@ Route::prefix('/admin')->group( function () {
         Route::delete('/toppings/{id}',[ToppingController::class, 'remove']);
         Route::put('/toppings/{id}',[ToppingController::class, 'update']);
         Route::post('/toppings',[ToppingController::class, 'create']);
+
+        Route::apiResource('/users', UserController::class);
+        
 
     });
     
