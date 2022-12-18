@@ -80,6 +80,7 @@ Route::prefix('/admin')->group( function () {
 
         Route::apiResource('/users', UserController::class);
         Route::get('/roles', [UserController::class, 'getAllRole']);
+        Route::post('/users/reset-password/{id}', [UserController::class, 'setDefaultPassword']);
         
 
     });

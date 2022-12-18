@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 use App\Models\Staff;
 use App\Models\User;
 use App\Http\Resources\StaffResource;
@@ -127,6 +130,21 @@ class UserController extends Controller
         $user = User::find($id);
         $data  = $request->all();
         if($user){
+
+            // if (!Hash::check($user->makeVisible(['password']), $data['old_password'] )) {
+            //     return response([
+            //         'status' => 'error',
+            //         'msg' => "1Xác thực đổi mật khẩu thất bại."
+            //     ], 422);
+            // }
+
+            if(!Auth::guard('web')->attempt(['email' => $data['email'], 'password' => $data['old_password']])){
+                return response([
+                    'status' => 'error',
+                    'msg' => "Xác thực đổi mật khẩu thất bại."
+                ], 422);
+            }
+
             $result = DB::transaction(function () use ($user, $data, $id) {
                 $staff = Staff::where('id_login' , $user['id'])->first();
                 // return response($staff);
@@ -140,7 +158,7 @@ class UserController extends Controller
                     $staff_new->save();
                 }
 
-                $data['password'] = bcrypt($data['password']);
+                $data['password'] = bcrypt($data['new_password']);
                 if($user->update($data)){
                     return true;
                 }
@@ -212,5 +230,30 @@ class UserController extends Controller
             'status' => 'success',
             'data' => Role::get()
         ]);
+    }
+
+    public function setDefaultPassword($id){
+        $user = User::find($id);
+        if($user){
+            $user['password'] = bcrypt("PhucLong123`");
+            if($user->save()){
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => 'Reset mật khẩu thành công.',
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'error',
+                    'msg' => "Reset mật khẩu thất bại." ,
+                ],422);
+            }
+        }
+        else{
+            return response()->json([
+                'status' => 'error',
+                'msg' => "Không tìm thấy tài khoản" ,
+            ],422);
+        }
     }
 }

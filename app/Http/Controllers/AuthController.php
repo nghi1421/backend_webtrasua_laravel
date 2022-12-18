@@ -227,6 +227,8 @@ class AuthController extends Controller
             'remember' => 'boolean'
         ]);
 
+        
+
         $remember = $credentials['remember'] ?? false;
         unset($credentials['remember']);
         if(!Auth::attempt($credentials, $remember)){

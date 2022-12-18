@@ -29,8 +29,11 @@ class UpdateUserRequest extends FormRequest
         if( $method == "PUT"){
             return [
                 'email' => ['required','email',Rule::unique('users', 'email')->ignore($this->user)],
-                'password' => [
-                    'required',
+                'old_password' => ['required'],
+                'new_password' => [
+                'required',
+                'confirmed',
+
                     Password::min(8)->mixedCase()->numbers()->symbols()
                 ],
                 'role_id' => 'required',
@@ -40,8 +43,11 @@ class UpdateUserRequest extends FormRequest
         else{
             return [
                 'email' => ['sometimes','required','email',Rule::unique('users', 'email')->ignore($this->user)],
+                'old_password' => ['required'],
                 'password' => [
-                    'sometimes','required',
+                    'sometimes',
+                    'required',
+                    'confirmed',
                     Password::min(8)->mixedCase()->numbers()->symbols()
                 ],
                 'role_id' => 'sometimes','required',

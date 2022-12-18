@@ -28,6 +28,7 @@ class StoreUserAdmin extends FormRequest
             'email' => ['required','email','unique:users,email'],
             'password' => [
                 'required',
+                'confirmed',
                 Password::min(8)->mixedCase()->numbers()->symbols()
             ],
             'role_id' => 'required',
