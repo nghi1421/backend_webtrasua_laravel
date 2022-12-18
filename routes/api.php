@@ -79,6 +79,7 @@ Route::prefix('/admin')->group( function () {
         Route::post('/toppings',[ToppingController::class, 'create']);
 
         Route::apiResource('/users', UserController::class);
+        Route::get('/roles', [UserController::class, 'getAllRole']);
         
 
     });

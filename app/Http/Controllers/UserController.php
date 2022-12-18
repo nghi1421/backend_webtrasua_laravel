@@ -12,6 +12,8 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\StoreUserAdmin;
 use App\Http\Requests\UpdateUserRequest;
 
+use App\Models\Role;
+
 use Illuminate\Support\Facades\DB; 
 
 class UserController extends Controller
@@ -203,5 +205,12 @@ class UserController extends Controller
                 'msg' => "Không tìm thấy tài khoản" ,
             ],422);
         }
+    }
+
+    public function getAllRole(){
+        return response()->json([
+            'status' => 'success',
+            'data' => Role::get()
+        ]);
     }
 }
