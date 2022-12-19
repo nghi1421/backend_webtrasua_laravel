@@ -19,10 +19,23 @@ class OrderResource extends JsonResource
      */
     public function toArray($request)
     {
+        // $status = '';
+        // if($this->status == 0 )
+        // $status = "Hủy";
+        // elseif($this->status == 1)
+        // $status = "Đã xác nhận";
+        // elseif($this->status == 1)
+        // $status = "Đang pha chế";
+        // elseif($this->status == 1)
+        // $status = "Đã pha chế";
+        // elseif($this->status == 1)
+        // $status = "Đã trả món";
+        
         return [
             'id' => $this->id,
             'createdAt' => $this->created_at,
             'paid' => $this->paid == 0 ? "Chưa thanh toán" :"Đã thanh toán",
+            'status' => $this->status,
             'note' => $this->note,
             'staff' => $this->staff_id == null ? 'null' : new StaffResource(Staff::find($this->staff_id)),
             'shippingProvider' => $this->shipping_id == null ? 'null' : ShippingProvider::find($this->shipping_id),

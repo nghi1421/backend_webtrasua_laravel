@@ -17,6 +17,7 @@ use App\Http\Controllers\ShippingProviderController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\ToppingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ChefController;
 
 
 
@@ -87,6 +88,17 @@ Route::prefix('/admin')->group( function () {
     
     Route::post('/register',[AuthController::class, 'register']);
     Route::post('/login',[AuthController::class, 'login']);
+
+});
+
+
+Route::prefix('/chef')->group(function (){
+    Route::middleware("auth:sanctum")->group(function (){
+        Route::get('/order-queue-confirmed', [ChefController::class, 'getQueueOrdersConfirmed']);
+        Route::get('/order-queue-preparing', [ChefController::class, 'getQueueOrdersPreparing']);
+        Route::get('/order-status', [ChefController::class, 'getAllOrderStatus']);
+        
+    });
 
 });
 
