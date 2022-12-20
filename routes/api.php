@@ -115,6 +115,8 @@ Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);
 Route::get('/sizes', [DrinkController::class, 'getAllSize']);
 
 Route::post('/login-customer',[AuthController::class, 'loginCustomer']);
+Route::post('/customer/otp-authentication',[AuthController::class, 'getCustomerThroughtOTP']);
+Route::post('/add-new-customer',[AuthController::class, 'addCustomer']);
 
 
 Route::get('/testing-deploy',function(){

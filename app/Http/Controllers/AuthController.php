@@ -9,7 +9,7 @@ use App\Http\Resources\StaffResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\StaffAuthResource;
-
+use App\Http\Requests\StoreCustomerRequest;
 use App\Models\User;
 use App\Models\Staff;
 use App\Models\Customer;
@@ -383,32 +383,75 @@ class AuthController extends Controller
             'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:9'
         ]);
 
-        $cus = Customer::where('phone_number',$validation['phone_number'])->first();
+        return response()->json([
+            'status' => 'success',
+            'fakeOTP' => random_int(100000,999999),
+        ],400);
+
+
         
-        if(!$cus){
+    }
+
+    public function getCustomerThroughtOTP(Request $request){
+        $data  = $request->all();
+        if($data['result']){
+
+            $cus = Customer::where('phone_number',$data['phone_number'])->first();
+        
+            if(!$cus){
+                return response()->json([
+                    'status' => 'fail',
+                    'phone_number' => $data['phone_number'],
+                    'msg' => "Khách hàng chưa có tài khoản."
+                ],400);
+            }
+
+            $info_cus = new CustomerResource($cus);
+            $login_customer = [
+                'email' => 'allcustomer123@gmail.com',
+                'password' => 'ThanhNghi123`',
+            ];
+
+            Auth::attempt($login_customer);
+            $user = Auth::user();
+            $token = $user->createToken('customer')->plainTextToken;
+
+            return response([
+                'status' => 'success',
+                'msg' => "Đăng nhập thành công.",
+                'information' => $info_cus,
+                'roleUser' =>  Role::find(6),
+                'token' => $token,
+            ]);
+        }
+    }
+
+    public function addCustomer(StoreCustomerRequest $request){
+
+        try{
+            $new_cus = new CustomerResource(Customer::create($request->all()));
+        }
+        catch(Exception $e){
             return response()->json([
-                'status' => 'fail',
-                'fakeOTP' => random_int(100000,999999),
-                'msg' => "Khách hàng chưa có tài khoản."
-            ],400);
+                'status' => 'error',
+                'msg' => $e->getMessage(),
+            ],422);
         }
 
-        $info_cus = new CustomerResource($cus);
-
         $login_customer = [
-            'email' => 'allcustomer123@gmail.com',
-            'password' => 'ThanhNghi123`',
+        'email' => 'allcustomer123@gmail.com',
+        'password' => 'ThanhNghi123`',
         ];
 
         Auth::attempt($login_customer);
         $user = Auth::user();
         $token = $user->createToken('customer')->plainTextToken;
 
-        return response([
+
+        return response()->json([
             'status' => 'success',
-            'msg' => "Đăng nhập thành công.",
-            'information' => $info_cus,
-            'roleUser' =>  Role::find(6),
+            'msg' => 'Thêm khách hàng thành công',
+            'newCustomer' => $new_cus,
             'token' => $token,
         ]);
     }
