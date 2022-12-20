@@ -9,8 +9,9 @@ use App\Http\Resources\StaffResource;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\StaffAuthResource;
-use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\StoreNewCustomerRequest;
 use App\Models\User;
+
 use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\Role;
@@ -431,7 +432,7 @@ class AuthController extends Controller
         }
     }
 
-    public function addCustomer(StoreCustomerRequest $request){
+    public function addCustomer(StoreNewCustomerRequest $request){
 
         try{
             $new_cus = new CustomerResource(Customer::create($request->all()));
