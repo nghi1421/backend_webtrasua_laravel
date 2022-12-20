@@ -423,6 +423,11 @@ class AuthController extends Controller
                 'roleUser' =>  Role::find(6),
                 'token' => $token,
             ]);
+        }else{
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Xác thực otp thất bại."
+            ],400);
         }
     }
 
