@@ -441,9 +441,17 @@ class AuthController extends Controller
         }
     }
 
-    public function addCustomer(StoreNewCustomerRequest $request){
+    public function addCustomer(Request $request){
 
-        $new_cus = new CustomerResource(Customer::create($request->all()));
+        $validation = $request->validate([
+            'name' => ['required'],
+            'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9','unique:customers,phone_number'],
+            'dob' => ['date'],
+            'gender' => ['required'],
+            'active' => ['required', 'boolean'],
+        ]);
+        
+        $new_cus = new CustomerResource(Customer::create($validation));
         
         if($new_cus){
 
