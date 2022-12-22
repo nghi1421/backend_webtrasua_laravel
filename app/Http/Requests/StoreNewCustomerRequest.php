@@ -13,7 +13,7 @@ class StoreNewCustomerRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,6 +27,8 @@ class StoreNewCustomerRequest extends FormRequest
             'name' => ['required'],
             'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9','unique:customers,phone_number'],
             'dob' => ['date'],
+            'gender' => ['required', 'boolean'],
+            'active' => ['required', 'boolean'],
         ];
     }
 }

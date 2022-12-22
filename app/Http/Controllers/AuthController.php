@@ -406,13 +406,24 @@ class AuthController extends Controller
     public function getCustomerThroughtOTP(Request $request){
         $data  = $request->all();
         if($data['result']){
+
+            $login_customer = [
+                'email' => 'allcustomer123@gmail.com',
+                'password' => 'PhucLong123`',
+            ];
+    
+            Auth::attempt($login_customer);
+            $user = Auth::user();
+            $token = $user->createToken('customer')->plainTextToken;
+
             $cus = Customer::where('phone_number',$data['phone_number'])->first();
         
             if(!$cus){
                 return response()->json([
                     'status' => 'fail',
                     'phone_number' => $data['phone_number'],
-                    'msg' => "Khách hàng chưa có tài khoản."
+                    'msg' => "Khách hàng chưa có tài khoản.",
+                    'token' => $token
                 ],400);
             }
 
@@ -441,34 +452,16 @@ class AuthController extends Controller
         }
     }
 
-    public function addCustomer(Request $request){
+    public function addCustomer(StoreNewCustomerRequest $request){
 
-        $validation = $request->validate([
-            'name' => ['required'],
-            'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9','unique:customers,phone_number'],
-            'dob' => ['date'],
-            'gender' => ['required'],
-            'active' => ['required', 'boolean'],
-        ]);
-        
-        $new_cus = new CustomerResource(Customer::create($validation));
+        $new_cus = new CustomerResource(Customer::create($request->all()));
         
         if($new_cus){
-
-            $login_customer = [
-                'email' => 'allcustomer123@gmail.com',
-                'password' => 'PhucLong123`',
-            ];
-    
-            Auth::attempt($login_customer);
-            $user = Auth::user();
-            $token = $user->createToken('customer')->plainTextToken;
 
             return response()->json([
                 'status' => 'success',
                 'msg' => 'Thêm khách hàng thành công',
                 'newCustomer' => $new_cus,
-                'token' => $token,
             ]);
         }
         else{
