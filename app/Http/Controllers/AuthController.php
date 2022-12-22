@@ -449,7 +449,7 @@ class AuthController extends Controller
 
             $login_customer = [
                 'email' => 'allcustomer123@gmail.com',
-                'password' => 'ThanhNghi123`',
+                'password' => 'PhucLong123`',
             ];
     
             Auth::attempt($login_customer);
@@ -466,7 +466,7 @@ class AuthController extends Controller
         else{
             return response()->json([
                 'status' => 'error',
-                'msg' => $e->getMessage(),
+                'msg' => "Thêm nhân viên thất bại",
             ],422);
         }
     }
