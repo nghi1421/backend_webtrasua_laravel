@@ -267,7 +267,7 @@ class AuthController extends Controller
                 'status' => 'success',
                 'msg' => "Đăng nhập thành công.",
                 'roleUser' => $role,
-                'token' => $$user->createToken('customer')->plainTextToken,
+                'token' => $user->createToken('customer')->plainTextToken,
             ]); 
         }
         
