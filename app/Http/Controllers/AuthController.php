@@ -428,14 +428,7 @@ class AuthController extends Controller
             }
 
             $info_cus = new CustomerResource($cus);
-            $login_customer = [
-                'email' => 'allcustomer123@gmail.com',
-                'password' => 'PhucLong123`',
-            ];
-
-            Auth::attempt($login_customer);
-            $user = Auth::user();
-            $token = $user->createToken('customer')->plainTextToken;
+           
 
             return response([
                 'status' => 'success',
