@@ -381,7 +381,7 @@ class AuthController extends Controller
      */
     public function loginCustomer(Request $request){
         $validation = $request->validate([
-            'phone_number' => 'required|regex:/(0)[0-9]/|not_regex:/[a-z]/|min:9'
+            'phone_number' => ['required','regex:/(0)[0-9]/','not_regex:/[a-z]/','min:9']
         ]);
 
         return response()->json([
