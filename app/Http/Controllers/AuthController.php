@@ -242,25 +242,35 @@ class AuthController extends Controller
         $user = Auth::user();
 
         $role = Role::where('id',$user['role_id'])->first();
+        if($role !=6){
+            $user_info =  new StaffAuthResource(Staff::where('id_login',$user['id'])->first());
 
-        $user_info =  new StaffAuthResource(Staff::where('id_login',$user['id'])->first());
+            if($user_info['active']==0){
+                return response([
+                    'status' => 'error',
+                    'msg' => "Xác thực không thành công."
+                ], 422);
+            }
+            
+            $token = $user->createToken('main')->plainTextToken;
 
-        if($user_info['active']==0){
-            return response([
-                'status' => 'error',
-                'msg' => "Xác thực không thành công."
-            ], 422);
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Đăng nhập thành công.",
+                'information' => $user_info,
+                'roleUser' => $role,
+                'token' => $token,
+            ]);    
+        }
+        else{
+            return response()->json([
+                'status' => 'success',
+                'msg' => "Đăng nhập thành công.",
+                'roleUser' => $role,
+                'token' => $$user->createToken('customer')->plainTextToken,
+            ]); 
         }
         
-        $token = $user->createToken('main')->plainTextToken;
-
-        return response()->json([
-            'status' => 'success',
-            'msg' => "Đăng nhập thành công.",
-            'information' => $user_info,
-            'roleUser' => $role,
-            'token' => $token,
-        ]);
 
     }
 
@@ -396,7 +406,6 @@ class AuthController extends Controller
     public function getCustomerThroughtOTP(Request $request){
         $data  = $request->all();
         if($data['result']){
-
             $cus = Customer::where('phone_number',$data['phone_number'])->first();
         
             if(!$cus){
@@ -434,31 +443,31 @@ class AuthController extends Controller
 
     public function addCustomer(StoreNewCustomerRequest $request){
 
-        try{
-            $new_cus = new CustomerResource(Customer::create($request->all()));
+        $new_cus = new CustomerResource(Customer::create($request->all()));
+        
+        if($new_cus){
+
+            $login_customer = [
+                'email' => 'allcustomer123@gmail.com',
+                'password' => 'ThanhNghi123`',
+            ];
+    
+            Auth::attempt($login_customer);
+            $user = Auth::user();
+            $token = $user->createToken('customer')->plainTextToken;
+
+            return response()->json([
+                'status' => 'success',
+                'msg' => 'Thêm khách hàng thành công',
+                'newCustomer' => $new_cus,
+                'token' => $token,
+            ]);
         }
-        catch(Exception $e){
+        else{
             return response()->json([
                 'status' => 'error',
                 'msg' => $e->getMessage(),
             ],422);
         }
-
-        $login_customer = [
-        'email' => 'allcustomer123@gmail.com',
-        'password' => 'ThanhNghi123`',
-        ];
-
-        Auth::attempt($login_customer);
-        $user = Auth::user();
-        $token = $user->createToken('customer')->plainTextToken;
-
-
-        return response()->json([
-            'status' => 'success',
-            'msg' => 'Thêm khách hàng thành công',
-            'newCustomer' => $new_cus,
-            'token' => $token,
-        ]);
     }
 }
