@@ -387,7 +387,7 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'fakeOTP' => random_int(100000,999999),
-        ],400);
+        ]);
 
 
         
