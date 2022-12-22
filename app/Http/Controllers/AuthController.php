@@ -242,7 +242,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         $role = Role::where('id',$user['role_id'])->first();
-        if($role !=6){
+        if($role['id'] != 6){
             $user_info =  new StaffAuthResource(Staff::where('id_login',$user['id'])->first());
 
             if($user_info['active']==0){
