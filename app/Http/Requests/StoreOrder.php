@@ -55,7 +55,6 @@ class StoreOrder extends FormRequest
             ],
             'order_detail.*.drink_detail_id' => [
                 'required',
-                'exists:drink_details,id',
             ],
             'order_detail.*.quantity' => [
                 'required',
