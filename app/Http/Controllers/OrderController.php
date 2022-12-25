@@ -177,12 +177,11 @@ class OrderController extends Controller
     public function predictValues(Request $request){
         $data =$request->all();
         $dataReturn = [];
-        $typeOfDrinkFind = TypeOfDrink::find($data['category_id']);
+        
         $dataReturn['special'] = Drink::where('tod_id', $data['category_id'])->orderBy('sales_on_day','desc')->get();
 
         $dataReturn['normal'] = Drink::where('tod_id', '!=', $data['category_id'])->orderBy('sales_on_day','desc')->get();
 
-        $typeOfDrink = TypeOfDrink::get();
         return response($dataReturn);
     }
 }
