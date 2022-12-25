@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Topping;
 use App\Models\Drink;
 use App\Models\DrinkDetail;
+use App\Models\TypeOfDrink;
 use App\Models\Size;
 
 use App\Http\Requests\StoreOrder;
@@ -80,7 +81,7 @@ class OrderController extends Controller
             return response()->json([
                 'status'   => 'error',
                 'msg' => "Them that bai"
-            ]);
+            ],422);
         }else{
             return response()->json([
                 'status'   => 'success',
@@ -109,8 +110,11 @@ class OrderController extends Controller
             $order_details[$i]['drinkName'] = Drink::select('name')->where('id', $order_details[$i]['drinkDetail']['drink_id'])->first()['name'];
             $order_details[$i]['drinkSize'] = Size::select('name')->where('id', $order_details[$i]['drinkDetail']['size_id'])->first()['name'];
             $order_details[$i]['quantity'] = $order_detail['pivot']['quantity'];
-            $order_details[$i]['price'] = $order_detail['pivot']['price'];    
-
+            $order_details[$i]['price'] = $order_detail['pivot']['price'];
+            $drink_info = Drink::find($order_details[$i]['drinkDetail']['drink_id']);
+            $drink_info['quantity'] =  $drink_info + $order_details[$i]['quantity'];
+            $drink_info->save();
+            
             if($order_detail['pivot']['topping_list'] != null){
                $order_details[$i]['topping_list']  = json_decode($order_detail['pivot']['topping_list'], true);
                 foreach($order_details[$i]['topping_list'] as $key => $toppings){
@@ -168,5 +172,17 @@ class OrderController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function predictValues(Request $request){
+        $data =$request->all();
+        $dataReturn = [];
+        $typeOfDrinkFind = TypeOfDrink::find($data['category_id']);
+        $dataReturn['special'] = Drink::where('tod_id', $data['category_id'])->orderBy('sales_on_day','desc')->get();
+
+        $dataReturn['normal'] = Drink::where('tod_id', '!=', $data['category_id'])->orderBy('sales_on_day','desc')->get();
+
+        $typeOfDrink = TypeOfDrink::get();
+        return response($dataReturn);
     }
 }

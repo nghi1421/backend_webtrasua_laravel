@@ -69,6 +69,8 @@ Route::prefix('/admin')->group( function () {
 
         Route::apiResource('/orders', OrderController::class);
 
+        Route::post('/orders/get-list-predict', [OrderController::class, 'predictValues']);
+
         Route::apiResource('/sizes', SizeController::class);
 
         Route::apiResource('/providers', ProviderController::class);
