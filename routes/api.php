@@ -69,7 +69,7 @@ Route::prefix('/admin')->group( function () {
 
         Route::apiResource('/orders', OrderController::class);
 
-        Route::post('/orders/get-list-predict', [OrderController::class, 'predictValues']);
+        
 
         Route::apiResource('/sizes', SizeController::class);
 
@@ -120,6 +120,7 @@ Route::post('/login-customer',[AuthController::class, 'loginCustomer']);
 Route::post('/customer/otp-authentication',[AuthController::class, 'getCustomerThroughtOTP']);
 Route::post('/add-new-customer',[AuthController::class, 'addCustomer']);
 
+Route::post('/orders/get-list-predict', [OrderController::class, 'predictValues']);
 
 Route::get('/testing-deploy',function(){
     return 'Hello Tu';
