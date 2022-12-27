@@ -69,7 +69,6 @@ Route::prefix('/admin')->group( function () {
 
         Route::apiResource('/orders', OrderController::class);
 
-        
 
         Route::apiResource('/sizes', SizeController::class);
 

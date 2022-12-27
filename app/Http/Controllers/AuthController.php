@@ -408,8 +408,8 @@ class AuthController extends Controller
         if($data['result']){
 
             $login_customer = [
-                'email' => 'allcustomer123@gmail.com',
-                'password' => 'PhucLong123`',
+                'email' => 'admin@gmail.com',
+                'password' => 'Admin12345.',
             ];
     
             Auth::attempt($login_customer);
