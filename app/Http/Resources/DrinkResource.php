@@ -20,13 +20,15 @@ class DrinkResource extends JsonResource
         $sizes = [];
         $index = 0;
         foreach ($size_drink as $size) {
-            $sizes[$index] = [
-                'id' => $size['pivot']['id'],
-                'name' => $size['name'],
-                'price' => $size['ratio']*$this['price'],
-                'active' => $size['pivot']['active'],
-            ];
-            $index +=1;
+            if($size['pivot']['active']){
+                $sizes[$index] = [
+                    'id' => $size['pivot']['id'],
+                    'name' => $size['name'],
+                    'price' => ($size['ratio']-1)*$this['price'],
+
+                ];
+                $index +=1;
+            }
         }
 
         return [
