@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Drink extends Model
 {
     use HasFactory;
+
     protected $table = 'drinks';
     protected $primaryKey   = 'id';
 
@@ -39,4 +40,7 @@ class Drink extends Model
     public function typeOfDrink(){
         return $this->belongsTo(TypeOfDrink::class,'tod_id','id');
     }
+
+
+
 }

@@ -116,6 +116,8 @@ Route::get('/drinks', [DrinkController::class, 'getAllDrinks']);
 Route::get('/drinks-by-typeofdrink-id/{tod_id}', [DrinkController::class, 'getDrinkByTypeOfDrink']);
 Route::get('/sizes', [DrinkController::class, 'getAllSize']);
 
+// Route::get('/drinks/search', [DrinkController::class, 'searchFullText']);
+
 Route::post('/login-customer',[AuthController::class, 'loginCustomer']);
 Route::post('/customer/otp-authentication',[AuthController::class, 'getCustomerThroughtOTP']);
 Route::post('/add-new-customer',[AuthController::class, 'addCustomer']);

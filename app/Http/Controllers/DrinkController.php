@@ -27,6 +27,7 @@ class DrinkController extends Controller
      */
     public function index()
     {
+
         return response()->json([
             'status' => 'success',
             'data' => Drink::paginate(5)
@@ -181,8 +182,19 @@ class DrinkController extends Controller
             ]);
         }
     }
+       
+    public function getAllDrinks(Request $request){
+        $data_request = $request->all();
 
-    public function getAllDrinks(){
+        if ($data_request != []) {
+            $search = $data_request['search'];
+            $search = str_replace("-", ' ', $search);
+            $data = Drink::where('name','like', "%".$search."%")->get();
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+            ]);
+        }
         return new DrinkCollection(Drink::get());
     }
 
@@ -204,4 +216,5 @@ class DrinkController extends Controller
             'sizes' => TypeOfDrink::get(),
         ]);
     }
+
 }
