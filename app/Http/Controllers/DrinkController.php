@@ -186,6 +186,11 @@ class DrinkController extends Controller
         return new DrinkCollection(Drink::get());
     }
 
+
+    public function getDrinkByTypeOfDrink($tod_id){
+        return new DrinkCollection(Drink::where('tod_id',$tod_id)->get());
+    }
+
     public function getAllSize(){
         return response()->json([
             'status' => 'success',
