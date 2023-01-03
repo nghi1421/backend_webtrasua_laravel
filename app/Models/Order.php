@@ -24,7 +24,7 @@ class Order extends Model
         'quantity',
     ];
 
-    public $timestamps = false;
+    public $timestamps = FALSE;
 
     public function branch(){
         return $this->hasOne(Branch::class);

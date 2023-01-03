@@ -47,6 +47,7 @@ Route::prefix('/admin')->group( function () {
         Route::apiResource('/customers', CustomerController::class);
         Route::post('/customers/active/{id}', [CustomerController::class, 'active']);
         Route::post('/customers/inactive/{id}', [CustomerController::class, 'inActive']);
+        Route::post('/customers/{id}/add-address', [CustomerController::class, 'addNewAddress']);
 
         Route::apiResource('/branches', BranchController::class);
         Route::post('/branches/active/{id}', [BranchController::class, 'active']);

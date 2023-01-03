@@ -9,6 +9,7 @@ use App\Http\Resources\CustomerResource;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Address;
 use Illuminate\Support\Facades\DB; 
 
 
@@ -245,5 +246,35 @@ class CustomerController extends Controller
             'status' => 'success',
             'msg' => 'Thiết lập ngừng hoạt động thành công.',
         ]);
+    }
+
+    public function addNewAddress($id, Request $request){
+    
+        $customer = Customer::find($id);
+        if($customer){
+            $new_address = Address::create([
+                'address' => $request->address,
+                'customer_id' => $id,
+            ]);
+
+            if($new_address){
+                return response()->json([
+                    'status' => 'success',
+                    'msg' => "Thêm địa chỉ mới thành công!",
+                    'newAddress' => $new_address,
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'fail',
+                    'msg' => "Thêm địa chỉ mới thất bại!",
+                ]);
+            }
+        }else{
+            return response()->json([
+                'status' => 'fail',
+                'msg' => "Khách hàng không tồn tại!",
+            ]);
+        }
     }
 }

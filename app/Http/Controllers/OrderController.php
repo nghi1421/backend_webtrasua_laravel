@@ -53,10 +53,17 @@ class OrderController extends Controller
         $result = DB::transaction(function () use ($data){
 
             $data['status'] = 1;
+            // $data['created']
             $new_order = Order::create($data);
 
             foreach($data['order_detail'] as $key => $order_detail){
                 $topping_list = [];
+
+                $drink_detail= DrinkDetail::find($order_detail['drink_detail_id']);
+                $drink_info = Drink::find($drink_detail['drink_id']);
+                $drink_info['sales_on_day'] =  $order_detail['quantity'] + $drink_info['sales_on_day'];
+                $drink_info->save();
+
                 foreach($order_detail['topping_list'] as $key1 => $toppings){
                     $topping_list[$key1]['quan'] = $toppings['quan'];
                     $topping_list[$key1]['price'] = [];
@@ -86,7 +93,7 @@ class OrderController extends Controller
             return response()->json([
                 'status'   => 'success',
                 'msg' => "Them thanh cong",
-                'newOrder' => $result
+                'newOrder' => new OrderResource(Order::find($result['id'])),
             ]);
         }
     }
@@ -111,9 +118,7 @@ class OrderController extends Controller
             $order_details[$i]['drinkSize'] = Size::select('name')->where('id', $order_details[$i]['drinkDetail']['size_id'])->first()['name'];
             $order_details[$i]['quantity'] = $order_detail['pivot']['quantity'];
             $order_details[$i]['price'] = $order_detail['pivot']['price'];
-            $drink_info = Drink::find($order_details[$i]['drinkDetail']['drink_id']);
-            $drink_info['quantity'] =  $drink_info + $order_details[$i]['quantity'];
-            $drink_info->save();
+
             
             if($order_detail['pivot']['topping_list'] != null){
                $order_details[$i]['topping_list']  = json_decode($order_detail['pivot']['topping_list'], true);
