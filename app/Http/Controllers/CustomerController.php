@@ -254,7 +254,7 @@ class CustomerController extends Controller
         if($customer){
             $new_address = Address::create([
                 'address' => $request->address,
-                'customer_id' => $id,
+                'customer_id' => int($id),
             ]);
 
             if($new_address){
@@ -268,13 +268,13 @@ class CustomerController extends Controller
                 return response()->json([
                     'status' => 'fail',
                     'msg' => "Thêm địa chỉ mới thất bại!",
-                ]);
+                ],422);
             }
         }else{
             return response()->json([
                 'status' => 'fail',
                 'msg' => "Khách hàng không tồn tại!",
-            ]);
+            ],422);
         }
     }
 }
