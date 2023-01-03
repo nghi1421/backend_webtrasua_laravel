@@ -25,9 +25,18 @@ class OrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return new OrderCollection(Order::paginate(5));
+        if($request->type == 'onl'){
+            return new OrderCollection(Order::where('staff_id', NULL)->paginate(6));
+        }
+        else if($request->type == 'off'){
+            return new OrderCollection(Order::where('staff_id','!=', NULL)->paginate(6));
+        }
+        else{
+            return new OrderCollection(Order::paginate(6));
+        }
+        
     }
 
     /**
